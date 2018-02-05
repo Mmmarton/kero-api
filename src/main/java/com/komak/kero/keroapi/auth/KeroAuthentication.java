@@ -7,18 +7,18 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 
 @Component
-public class LibraryAuthentication implements Authentication {
+class KeroAuthentication implements Authentication {
 
     private static final long serialVersionUID = 1L;
 
     private String token;
     private Collection<? extends GrantedAuthority> grants;
 
-    public LibraryAuthentication() {
+    public KeroAuthentication() {
 
     }
 
-    public LibraryAuthentication(String token) {
+    public KeroAuthentication(String token) {
         this.token = token;
     }
 
@@ -57,7 +57,6 @@ public class LibraryAuthentication implements Authentication {
 
     }
 
-    //added this method to set grants
     public void setAuthorities(Collection<? extends GrantedAuthority> grants) {
         this.grants = grants;
     }

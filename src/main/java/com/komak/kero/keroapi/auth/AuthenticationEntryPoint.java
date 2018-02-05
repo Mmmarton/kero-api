@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Component
-public class AuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
+class AuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
 
     private final static Logger LOG = LoggerFactory.getLogger("Auth");
 
@@ -23,7 +23,7 @@ public class AuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
         response.addHeader("WWW-Authenticate", "Basic realm='" + getRealmName() + "'");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         PrintWriter writer = response.getWriter();
-        writer.println("HTTP Status 401 - " + authEx.getMessage());
+        writer.println("Authentication failed.");
         LOG.warn("failed auth", authEx);
     }
 
