@@ -31,8 +31,8 @@ class AuthController {
         return "You are ok.";
     }
 
-    @RequestMapping(value = "/lalala", method = RequestMethod.GET)
-    public String lalala() {
-        return "You are ok.";
+    @RequestMapping(value = "/session", method = RequestMethod.GET)
+    public String getSession() {
+        return "Here you are.";
     }
 }
