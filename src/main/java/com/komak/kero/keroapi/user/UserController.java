@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/user")
 class UserController {
@@ -16,7 +18,7 @@ class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity<Object> register(@RequestBody UserCreateModel user) {
+    public ResponseEntity<Object> register(@RequestBody @Valid UserCreateModel user) {
         userService.create(user.toUser());
 
         return new ResponseEntity("Done.", HttpStatus.OK);

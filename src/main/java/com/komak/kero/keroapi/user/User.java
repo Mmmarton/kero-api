@@ -1,14 +1,31 @@
 package com.komak.kero.keroapi.user;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document
 public class User {
 
+    @Id
+    private String id;
+    @Indexed(unique = true)
     private String username;
     private String password;
     private String nickname;
     private String firstName;
     private String lastName;
+    @Indexed(unique = true)
     private String email;
     private String picture;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;

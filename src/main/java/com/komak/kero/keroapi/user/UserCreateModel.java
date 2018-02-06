@@ -1,10 +1,22 @@
 package com.komak.kero.keroapi.user;
 
+import com.komak.kero.keroapi.validation.FieldErrorMessage;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+
 class UserCreateModel {
 
+    @NotEmpty(message = FieldErrorMessage.EMPTY)
+    @Length(min = 8, max = 30, message = FieldErrorMessage.INVALID_LENGTH)
     private String username;
+    @NotEmpty(message = FieldErrorMessage.EMPTY)
+    @Length(min = 12, max = 30, message = FieldErrorMessage.INVALID_LENGTH)
     private String password;
+    @NotEmpty(message = FieldErrorMessage.EMPTY)
+    @Length(min = 3, max = 20, message = FieldErrorMessage.INVALID_LENGTH)
     private String nickname;
+    @NotEmpty(message = FieldErrorMessage.EMPTY)
+    @Length(min = 5, max = 50, message = FieldErrorMessage.INVALID_LENGTH)
     private String email;
 
     public User toUser() {
