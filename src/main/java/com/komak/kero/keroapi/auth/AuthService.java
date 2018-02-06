@@ -27,8 +27,13 @@ class AuthService {
         if (user == null) {
             return null;
         }
+        if (tokens.contains(user)) {
+            tokens.values().remove(user);
+        }
+
         token = tokenGenerator.getToken();
         tokens.put(token, user);
+        System.out.println(tokens.size());
         UserViewModel userViewModel = new UserViewModel(user);
         userViewModel.setToken(token);
         return userViewModel;
