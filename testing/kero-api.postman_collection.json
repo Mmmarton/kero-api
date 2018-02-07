@@ -1,0 +1,1080 @@
+{
+	"info": {
+		"name": "kero-api",
+		"_postman_id": "b9bf871e-324e-e6a4-207e-d575bce8291d",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "tests",
+			"description": "",
+			"item": [
+				{
+					"name": "register",
+					"description": "",
+					"item": [
+						{
+							"name": "init_session",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "8c634463-8020-479e-a61b-2cff2fceae89",
+										"type": "text/javascript",
+										"exec": [
+											"//Replace XSFR-TOKEN with your cookie name",
+											"var csrf_token = postman.getResponseCookie(\"XSRF-TOKEN\");",
+											"postman.setEnvironmentVariable(\"csrf_token\", decodeURIComponent(csrf_token.value));"
+										]
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "localhost:8080/auth/session",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"session"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "success",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "f15dab49-9864-4c78-8b73-fae17c888e93",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"\", function () {",
+											"    pm.expect(pm.response.text()).to.eql(\"Done.\");",
+											"});"
+										]
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "f50ce2b8-d61b-4a7a-b13a-d5748b5c83e7",
+										"type": "text/javascript",
+										"exec": [
+											"function random() {",
+											"    return Math.floor(Math.random() * 100000);",
+											"}",
+											"var username = \"username\" + random();",
+											"pm.environment.set(\"username\", username);",
+											"",
+											"var email = \"email@\" + random() + \".com\";",
+											"pm.environment.set(\"email\", email);"
+										]
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-XSRF-TOKEN",
+										"value": "{{csrf_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"12345678901234567890\",\n\t\"nickname\": \"nick\",\n\t\"email\": \"{{email}}\",\n\t\"role\": 1\n}"
+								},
+								"url": {
+									"raw": "localhost:8080/user/register",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"user",
+										"register"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "duplicate_email",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "e58c7098-f556-4c35-a658-c3e2341457dd",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"\", function () {",
+											"    var data = pm.response.json();",
+											"    pm.expect(data.field).to.eql(\"email\");",
+											"    pm.expect(data.error).to.eql(\"DUPLICATE\");",
+											"});"
+										]
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "981e8378-4e3e-4b40-a221-6230d878ffd8",
+										"type": "text/javascript",
+										"exec": [
+											"function random() {",
+											"    return Math.floor(Math.random() * 100000);",
+											"}",
+											"var username = \"username\" + random();",
+											"pm.environment.set(\"username2\", username);"
+										]
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-XSRF-TOKEN",
+										"value": "{{csrf_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"username\": \"{{username2}}\",\n\t\"password\": \"12345678901234567890\",\n\t\"nickname\": \"nick\",\n\t\"email\": \"{{email}}\",\n\t\"role\": 1\n}"
+								},
+								"url": {
+									"raw": "localhost:8080/user/register",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"user",
+										"register"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "duplicate_username",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "0549c4f4-74d8-4efe-9a41-bbcb66a87bcc",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"\", function () {",
+											"    var data = pm.response.json();",
+											"    pm.expect(data.field).to.eql(\"username\");",
+											"    pm.expect(data.error).to.eql(\"DUPLICATE\");",
+											"});"
+										]
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "63546fe7-7876-4645-837c-44edaaecdfc0",
+										"type": "text/javascript",
+										"exec": [
+											"function random() {",
+											"    return Math.floor(Math.random() * 100000);",
+											"}",
+											"",
+											"var email = \"email@\" + random() + \".com\";",
+											"pm.environment.set(\"email2\", email);"
+										]
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-XSRF-TOKEN",
+										"value": "{{csrf_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"12345678901234567890\",\n\t\"nickname\": \"nick\",\n\t\"email\": \"{{email2}}\",\n\t\"role\": 1\n}"
+								},
+								"url": {
+									"raw": "localhost:8080/user/register",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"user",
+										"register"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "no_body",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "03121683-f27d-44dd-a2d7-3e33b921060a",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"\", function () {",
+											"    var data = pm.response.json();",
+											"    pm.expect(data.status).to.eql(400);",
+											"    pm.expect(data.message).to.eql(\"INVALID_DATA\");",
+											"});"
+										]
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-XSRF-TOKEN",
+										"value": "{{csrf_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "localhost:8080/user/register",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"user",
+										"register"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "no_fields",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "73b38d9f-a675-4a3d-811a-e95998877b30",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"\", function () {",
+											"    var data = pm.response.json();",
+											"    data.forEach(function(entry){",
+											"        pm.expect(entry.error).to.eql(\"EMPTY\");",
+											"    })",
+											"});"
+										]
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-XSRF-TOKEN",
+										"value": "{{csrf_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\n}"
+								},
+								"url": {
+									"raw": "localhost:8080/user/register",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"user",
+										"register"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "short_fields",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "4ea3c9ce-3232-48b0-8c62-fbe04c2ca87d",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"\", function () {",
+											"    var data = pm.response.json();",
+											"    data.forEach(function(entry){",
+											"        pm.expect(entry.error).to.eql(\"INVALID_LENGTH\");",
+											"    })",
+											"});"
+										]
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-XSRF-TOKEN",
+										"value": "{{csrf_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"username\": \"1234567\",\n\t\"password\": \"12345678901\",\n\t\"nickname\": \"12\",\n\t\"email\": \"12\",\n\t\"role\": 1\n}"
+								},
+								"url": {
+									"raw": "localhost:8080/user/register",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"user",
+										"register"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "long_fields",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "a3fa38e6-2a28-4da5-bc8a-c8adbdc8a10c",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"\", function () {",
+											"    var data = pm.response.json();",
+											"    data.forEach(function(entry){",
+											"        pm.expect(entry.error).to.eql(\"INVALID_LENGTH\");",
+											"    })",
+											"});"
+										]
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-XSRF-TOKEN",
+										"value": "{{csrf_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"username\": \"1234567890123456789012345678901\",\n\t\"password\": \"1234567890123456789012345678901\",\n\t\"nickname\": \"123456789012345678901\",\n\t\"email\": \"123456789012345678901234567890123456789012345678901\",\n\t\"role\": 1\n}"
+								},
+								"url": {
+									"raw": "localhost:8080/user/register",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"user",
+										"register"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "session",
+					"description": "",
+					"item": [
+						{
+							"name": "login_success",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "539165a5-04a4-4fa7-985f-897f0f979d05",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"\", function () {",
+											"    var data = pm.response.json();",
+											"    pm.expect(data.token != null).to.be.true;",
+											"    postman.setEnvironmentVariable(\"token\", data.token);",
+											"});"
+										]
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-XSRF-TOKEN",
+										"value": "{{csrf_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"12345678901234567890\"\n}"
+								},
+								"url": {
+									"raw": "localhost:8080/auth/login",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"login"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "status_success",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "40318320-11f7-4d09-b4bc-6d8c1d4c4d51",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"\", function () {",
+											"    var data = pm.response.json();",
+											"    pm.expect(data.role).to.eql(\"ROLE_MEMBER\");",
+											"    var csrf_token = postman.getResponseCookie(\"XSRF-TOKEN\");",
+											"    postman.setEnvironmentVariable(\"csrf_token\", decodeURIComponent(csrf_token.value));",
+											"});"
+										]
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "KERO_AUTH_TOKEN",
+										"value": "{{token}}"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "localhost:8080/auth/status/",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"status",
+										""
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "login_wrong_username",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "c694f83a-e30a-4dd6-80b4-10772121ac34",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"\", function () {",
+											"    pm.expect(pm.response.text()).to.eql(\"Invalid credentials.\");",
+											"});"
+										]
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "b5c80a66-d180-4539-8f9e-355524408d43",
+										"type": "text/javascript",
+										"exec": [
+											"function random() {",
+											"    return Math.floor(Math.random() * 100000);",
+											"}",
+											"var username = \"username\" + random();",
+											"pm.environment.set(\"username2\", username);"
+										]
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-XSRF-TOKEN",
+										"value": "{{csrf_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"username\": \"{{username2}}\",\n\t\"password\": \"12345678901234567890\"\n}"
+								},
+								"url": {
+									"raw": "localhost:8080/auth/login",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"login"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "login_wrong_password",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "93eee634-b2c5-40c7-858d-a7c71ddc5c1b",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"\", function () {",
+											"    pm.expect(pm.response.text()).to.eql(\"Invalid credentials.\");",
+											"});"
+										]
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "34f400e4-dded-4733-af7d-8425f6c39329",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-XSRF-TOKEN",
+										"value": "{{csrf_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"qweqweqweqweqweq\"\n}"
+								},
+								"url": {
+									"raw": "localhost:8080/auth/login",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"login"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "login_gives_new_token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "f91770ad-7812-4fba-9f43-6c9564e63148",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"\", function () {",
+											"    var data = pm.response.json();",
+											"    pm.expect(data.token != pm.environment.get(\"token\")).to.be.true;",
+											"    postman.setEnvironmentVariable(\"token_old\", pm.environment.get(\"token\"));",
+											"    postman.setEnvironmentVariable(\"token\", data.token);",
+											"});"
+										]
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-XSRF-TOKEN",
+										"value": "{{csrf_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"12345678901234567890\"\n}"
+								},
+								"url": {
+									"raw": "localhost:8080/auth/login",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"login"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "status_old_token_fails",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "5c3075f6-ca6c-443a-9e31-000d90f699e4",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"\", function () {",
+											"    console.log(pm.response.code);",
+											"    pm.expect(pm.response.code).to.eql(403);",
+											"    var csrf_token = postman.getResponseCookie(\"XSRF-TOKEN\");",
+											"    postman.setEnvironmentVariable(\"csrf_token\", decodeURIComponent(csrf_token.value));",
+											"});"
+										]
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "KERO_AUTH_TOKEN",
+										"value": "{{token_old}}"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "localhost:8080/auth/status/",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"status",
+										""
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "status_new_token_success",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "3f6b2a42-8095-44d7-8d1d-08f703a95dae",
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"\", function () {",
+											"    var data = pm.response.json();",
+											"    pm.expect(data.role).to.eql(\"ROLE_MEMBER\");",
+											"    var csrf_token = postman.getResponseCookie(\"XSRF-TOKEN\");",
+											"    postman.setEnvironmentVariable(\"csrf_token\", decodeURIComponent(csrf_token.value));",
+											"});"
+										]
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "KERO_AUTH_TOKEN",
+										"value": "{{token}}"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "localhost:8080/auth/status/",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"status",
+										""
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		},
+		{
+			"name": "requests",
+			"description": "",
+			"item": [
+				{
+					"name": "register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "408f71f8-742d-4d4f-91f6-0690b24dd1c2",
+								"type": "text/javascript",
+								"exec": [
+									"pm.environment.set(\"token\", pm.response.text());"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"michaelbubble\",\n\t\"password\": \"123456789123456789\",\n\t\"nickname\": \"mickey\",\n\t\"email\": \"mickey@yahoo.com\",\n\t\"role\": 1\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/user/register",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"register"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c5dafe9c-da6e-493d-a7f3-e8efeca16ecf",
+								"type": "text/javascript",
+								"exec": [
+									"var data = pm.response.json();",
+									"postman.setEnvironmentVariable(\"token\", data.token);"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "{{csrf_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"michaelbubble\",\n\t\"password\": \"123456789123456789\"\n}"
+						},
+						"url": {
+							"raw": "localhost:8080/auth/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b7e1e792-db4c-493c-a16a-7af61f75bce0",
+								"type": "text/javascript",
+								"exec": [
+									"//Replace XSFR-TOKEN with your cookie name",
+									"var csrf_token = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"csrf_token\", decodeURIComponent(csrf_token.value));"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "KERO_AUTH_TOKEN",
+								"value": "{{token}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "localhost:8080/auth/status/",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"status",
+								""
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "session",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b7e1e792-db4c-493c-a16a-7af61f75bce0",
+								"type": "text/javascript",
+								"exec": [
+									"//Replace XSFR-TOKEN with your cookie name",
+									"var csrf_token = postman.getResponseCookie(\"XSRF-TOKEN\");",
+									"postman.setEnvironmentVariable(\"csrf_token\", decodeURIComponent(csrf_token.value));"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "localhost:8080/auth/session",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"session"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "username",
+				"value": "username",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "password",
+				"type": "string"
+			},
+			{
+				"key": "saveHelperData",
+				"type": "any"
+			},
+			{
+				"key": "showPassword",
+				"value": false,
+				"type": "boolean"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"exec": [
+					""
+				],
+				"id": "4cef495f-71c3-42d8-86fd-dad1aaba2926",
+				"type": "text/javascript"
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"exec": [
+					""
+				],
+				"id": "4f1695d2-672e-40ed-8e4c-0f96716f2077",
+				"type": "text/javascript"
+			}
+		}
+	]
+}
