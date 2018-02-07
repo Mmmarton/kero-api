@@ -26,10 +26,10 @@ class AuthService {
 
     public UserViewModel authenticate(Credentials credentials) {
         User user = userService.getByCredentials(credentials);
-        UserSession session = UserAdapter.toSession(user);
-        if (session == null) {
+        if (user == null) {
             return null;
         }
+        UserSession session = UserAdapter.toSession(user);
         if (tokens.contains(session)) {
             tokens.values().remove(session);
         }
