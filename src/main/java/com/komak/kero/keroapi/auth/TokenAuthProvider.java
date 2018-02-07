@@ -5,12 +5,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 class TokenAuthProvider implements AuthenticationProvider {
@@ -23,24 +18,21 @@ class TokenAuthProvider implements AuthenticationProvider {
             throws AuthenticationException {
 
         String token = auth.getCredentials().toString();
+        UserSession session = authService.getSession(token);
 
-        List<GrantedAuthority> grants = new ArrayList<>();
-        KeroAuthentication keroAuthentication = new KeroAuthentication(token);
-
-        if (authService.isAuthenticated(token)) {
-            grants.add(new SimpleGrantedAuthority(AuthRoles.ROLE_MEMBER));
-            keroAuthentication.setAuthorities(grants);
-            keroAuthentication.setAuthenticated(true);
-        } else {
+        if (session == null) {
             throw new BadCredentialsException("Invalid token " + token);
         }
 
-        return keroAuthentication;
+        UserAuthentication userAuthentication = new UserAuthentication(session);
+        userAuthentication.setAuthenticated(true);
+
+        return userAuthentication;
     }
 
     @Override
     public boolean supports(Class<?> arg0) {
-        return (KeroAuthentication.class.isAssignableFrom(arg0));
+        return (UserAuthentication.class.isAssignableFrom(arg0));
 
     }
 }

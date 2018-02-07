@@ -24,7 +24,7 @@ class AuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         PrintWriter writer = response.getWriter();
         writer.println("Authentication failed.");
-        LOG.warn("failed auth", authEx);
+        LOG.warn("failed auth: '" + request.getRequestURI() + "', reason: " + authEx.getMessage());
     }
 
     @Override

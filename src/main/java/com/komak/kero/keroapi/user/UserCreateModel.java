@@ -1,8 +1,12 @@
 package com.komak.kero.keroapi.user;
 
 import com.komak.kero.keroapi.validation.FieldErrorMessage;
+import com.sun.istack.internal.NotNull;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 class UserCreateModel {
 
@@ -18,15 +22,10 @@ class UserCreateModel {
     @NotEmpty(message = FieldErrorMessage.EMPTY)
     @Length(min = 5, max = 50, message = FieldErrorMessage.INVALID_LENGTH)
     private String email;
-
-    public User toUser() {
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setNickname(nickname);
-        user.setEmail(email);
-        return user;
-    }
+    @Min(0)
+    @Max(2)
+    @NotNull
+    private Integer role;
 
     public String getUsername() {
         return username;
@@ -58,5 +57,13 @@ class UserCreateModel {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Integer getRole() {
+        return role;
+    }
+
+    public void setRole(Integer role) {
+        this.role = role;
     }
 }

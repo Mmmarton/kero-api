@@ -1,5 +1,6 @@
 package com.komak.kero.keroapi.user;
 
+import com.komak.kero.keroapi.auth.Role;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,6 +21,7 @@ public class User {
     @Indexed(unique = true)
     private String email;
     private String picture;
+    private Role role;
 
     public String getId() {
         return id;
@@ -83,6 +85,14 @@ public class User {
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override

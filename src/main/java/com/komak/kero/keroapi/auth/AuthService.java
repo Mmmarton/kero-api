@@ -1,9 +1,12 @@
 package com.komak.kero.keroapi.auth;
 
 import com.komak.kero.keroapi.user.User;
+import com.komak.kero.keroapi.user.UserAdapter;
 import com.komak.kero.keroapi.user.UserService;
 import com.komak.kero.keroapi.user.UserViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,33 +17,36 @@ class AuthService {
     @Autowired
     private UserService userService;
 
-    private ConcurrentHashMap<String, User> tokens = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, UserSession> tokens = new ConcurrentHashMap<>();
     private TokenGenerator tokenGenerator;
 
-    public AuthService() {
-        tokenGenerator = new TokenGenerator(25, TokenGenerator.ALPHANUMERIC);
+    public AuthService(@Value("${auth.token.length}") int tokenLength) {
+        tokenGenerator = new TokenGenerator(tokenLength, TokenGenerator.ALPHANUMERIC);
     }
 
     public UserViewModel authenticate(Credentials credentials) {
         User user = userService.getByCredentials(credentials);
-        String token;
-        if (user == null) {
+        UserSession session = UserAdapter.toSession(user);
+        if (session == null) {
             return null;
         }
-        if (tokens.contains(user)) {
-            tokens.values().remove(user);
+        if (tokens.contains(session)) {
+            tokens.values().remove(session);
         }
 
-        token = tokenGenerator.getToken();
-        tokens.put(token, user);
-        System.out.println(tokens.size());
-        UserViewModel userViewModel = new UserViewModel(user);
+        String token = tokenGenerator.getToken();
+        tokens.put(token, session);
+        UserViewModel userViewModel = UserAdapter.toViewModel(user);
         userViewModel.setToken(token);
         return userViewModel;
     }
 
-    public boolean isAuthenticated(String token) {
-        return tokens.get(token) != null;
+    public UserSession getSession() {
+        return (UserSession) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+    }
+
+    public UserSession getSession(String token) {
+        return tokens.get(token);
     }
 
 }

@@ -19,7 +19,7 @@ class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<Object> register(@RequestBody @Valid UserCreateModel user) {
-        userService.create(user.toUser());
+        userService.create(UserAdapter.fromCreateModel(user));
 
         return new ResponseEntity("Done.", HttpStatus.OK);
     }

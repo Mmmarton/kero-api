@@ -4,22 +4,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Component
-class KeroAuthentication implements Authentication {
+class UserAuthentication implements Authentication {
 
     private static final long serialVersionUID = 1L;
 
-    private String token;
-    private Collection<? extends GrantedAuthority> grants;
+    private Object credentials;
 
-    public KeroAuthentication() {
-
+    public UserAuthentication() {
     }
 
-    public KeroAuthentication(String token) {
-        this.token = token;
+    public UserAuthentication(Object credentials) {
+        this.credentials = credentials;
     }
 
     @Override
@@ -29,12 +28,12 @@ class KeroAuthentication implements Authentication {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return grants;
+        return new ArrayList<>();
     }
 
     @Override
     public Object getCredentials() {
-        return token;
+        return credentials;
     }
 
     @Override
@@ -53,11 +52,6 @@ class KeroAuthentication implements Authentication {
     }
 
     @Override
-    public void setAuthenticated(boolean arg0) throws IllegalArgumentException {
-
-    }
-
-    public void setAuthorities(Collection<? extends GrantedAuthority> grants) {
-        this.grants = grants;
+    public void setAuthenticated(boolean authenticated) {
     }
 }

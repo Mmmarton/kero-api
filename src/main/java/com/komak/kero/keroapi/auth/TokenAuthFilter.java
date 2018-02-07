@@ -23,10 +23,10 @@ class TokenAuthFilter extends OncePerRequestFilter {
             HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authToken = request.getHeader(tokenName);
+        String token = request.getHeader(tokenName);
 
-        if (authToken != null) {
-            Authentication auth = new KeroAuthentication(authToken);
+        if (token != null) {
+            Authentication auth = new UserAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
 

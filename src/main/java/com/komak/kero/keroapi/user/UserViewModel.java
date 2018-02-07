@@ -9,17 +9,6 @@ public class UserViewModel {
     private String email;
     private String picture;
 
-    public UserViewModel() {
-    }
-
-    public UserViewModel(User user) {
-        this.nickname = user.getNickname();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
-        this.email = user.getEmail();
-        this.picture = user.getPicture();
-    }
-
     public String getToken() {
         return token;
     }
