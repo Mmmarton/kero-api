@@ -10,29 +10,29 @@ import org.springframework.stereotype.Component;
 @Component
 class TokenAuthProvider implements AuthenticationProvider {
 
-    @Autowired
-    private AuthService authService;
+  @Autowired
+  private AuthService authService;
 
-    @Override
-    public Authentication authenticate(Authentication auth)
-            throws AuthenticationException {
+  @Override
+  public Authentication authenticate(Authentication auth)
+      throws AuthenticationException {
 
-        String token = auth.getCredentials().toString();
-        UserSession session = authService.getSession(token);
+    String token = auth.getCredentials().toString();
+    UserSession session = authService.getSession(token);
 
-        if (session == null) {
-            throw new BadCredentialsException("Invalid token " + token);
-        }
-
-        UserAuthentication userAuthentication = new UserAuthentication(session);
-        userAuthentication.setAuthenticated(true);
-
-        return userAuthentication;
+    if (session == null) {
+      throw new BadCredentialsException("Invalid token " + token);
     }
 
-    @Override
-    public boolean supports(Class<?> arg0) {
-        return (UserAuthentication.class.isAssignableFrom(arg0));
+    UserAuthentication userAuthentication = new UserAuthentication(session);
+    userAuthentication.setAuthenticated(true);
 
-    }
+    return userAuthentication;
+  }
+
+  @Override
+  public boolean supports(Class<?> arg0) {
+    return (UserAuthentication.class.isAssignableFrom(arg0));
+
+  }
 }

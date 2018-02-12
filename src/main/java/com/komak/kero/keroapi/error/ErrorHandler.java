@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class ErrorHandler {
 
-    private static final String INVALID_DATA = "INVALID_DATA";
+  private static final String INVALID_DATA = "INVALID_DATA";
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public ErrorMessage handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
-        return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_DATA);
-    }
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseBody
+  public ErrorMessage handleHttpMessageNotReadableException(
+      HttpMessageNotReadableException exception) {
+    return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_DATA);
+  }
 }

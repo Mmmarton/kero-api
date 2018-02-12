@@ -10,17 +10,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 public class KeroApiApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(KeroApiApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(KeroApiApplication.class, args);
+  }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
-    @Bean
-    public Md5PasswordEncoder usernameEncoder() {
-        return new Md5PasswordEncoder();
-    }
+  @Bean
+  public Md5PasswordEncoder usernameEncoder() {
+    return new Md5PasswordEncoder();
+  }
 }

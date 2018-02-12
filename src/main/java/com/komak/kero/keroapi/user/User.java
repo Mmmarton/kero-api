@@ -1,111 +1,114 @@
 package com.komak.kero.keroapi.user;
 
 import com.komak.kero.keroapi.auth.Role;
+import java.util.Objects;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Objects;
-
 @Document
 public class User {
 
-    @Id
-    private String id;
-    @Indexed(unique = true)
-    private String username;
-    private String password;
-    private String nickname;
-    private String firstName;
-    private String lastName;
-    @Indexed(unique = true)
-    private String email;
-    private String picture;
-    private Role role;
+  @Id
+  private String id;
+  @Indexed(unique = true)
+  private String username;
+  private String password;
+  private String nickname;
+  private String firstName;
+  private String lastName;
+  @Indexed(unique = true)
+  private String email;
+  private String picture;
+  private Role role;
 
-    public String getId() {
-        return id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public String getUsername() {
-        return username;
-    }
+  public String getUsername() {
+    return username;
+  }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public String getPassword() {
+    return password;
+  }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public String getNickname() {
-        return nickname;
-    }
+  public String getNickname() {
+    return nickname;
+  }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
+  public void setNickname(String nickname) {
+    this.nickname = nickname;
+  }
 
-    public String getFirstName() {
-        return firstName;
-    }
+  public String getFirstName() {
+    return firstName;
+  }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
 
-    public String getLastName() {
-        return lastName;
-    }
+  public String getLastName() {
+    return lastName;
+  }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public String getPicture() {
-        return picture;
-    }
+  public String getPicture() {
+    return picture;
+  }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
-    }
+  public void setPicture(String picture) {
+    this.picture = picture;
+  }
 
-    public Role getRole() {
-        return role;
-    }
+  public Role getRole() {
+    return role;
+  }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
+  public void setRole(Role role) {
+    this.role = role;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) &&
-                Objects.equals(username, user.username);
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    User user = (User) o;
+    return Objects.equals(id, user.id) &&
+        Objects.equals(username, user.username);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 }

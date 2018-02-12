@@ -13,27 +13,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 class AuthController {
 
-    @Autowired
-    private AuthService authService;
+  @Autowired
+  private AuthService authService;
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<Object> login(@RequestBody Credentials credentials) {
-        UserViewModel user = authService.authenticate(credentials);
-        if (user == null) {
-            return new ResponseEntity("Invalid credentials.", HttpStatus.UNAUTHORIZED);
-        } else {
-            return new ResponseEntity(user, HttpStatus.OK);
-        }
+  @RequestMapping(value = "/login", method = RequestMethod.POST)
+  public ResponseEntity<Object> login(@RequestBody Credentials credentials) {
+    UserViewModel user = authService.authenticate(credentials);
+    if (user == null) {
+      return new ResponseEntity("Invalid credentials.", HttpStatus.UNAUTHORIZED);
     }
+    else {
+      return new ResponseEntity(user, HttpStatus.OK);
+    }
+  }
 
-    @RequestMapping(value = "/status", method = RequestMethod.GET)
-    public ResponseEntity<Object> status() {
-        UserSession session = authService.getSession();
-        return new ResponseEntity(session, HttpStatus.OK);
-    }
+  @RequestMapping(value = "/status", method = RequestMethod.GET)
+  public ResponseEntity<Object> getStatus() {
+    UserSession session = authService.getSession();
+    return new ResponseEntity(session, HttpStatus.OK);
+  }
 
-    @RequestMapping(value = "/session", method = RequestMethod.GET)
-    public String getSession() {
-        return "Here you are.";
-    }
+  @RequestMapping(value = "/session", method = RequestMethod.GET)
+  public String getSession() {
+    return "Here you are.";
+  }
 }

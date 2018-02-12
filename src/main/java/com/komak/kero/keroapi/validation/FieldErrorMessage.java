@@ -1,37 +1,65 @@
 package com.komak.kero.keroapi.validation;
 
+import java.util.Objects;
+
 public class FieldErrorMessage {
 
-    public static final String EMPTY = "EMPTY";
-    public static final String INVALID_LENGTH = "INVALID_LENGTH";
-    public static final String TOO_SHORT = "TOO_SHORT";
-    public static final String TOO_LONG = "TOO_LONG";
-    public static final String DUPLICATE = "DUPLICATE";
+  public static final String EMPTY = "EMPTY";
+  public static final String INVALID_LENGTH = "INVALID_LENGTH";
+  public static final String DUPLICATE = "DUPLICATE";
+  public static final String NULL = "NULL";
 
-    private String field;
-    private String error;
+  private String field;
+  private String error;
 
-    public FieldErrorMessage() {
+  public FieldErrorMessage() {
+  }
+
+  public FieldErrorMessage(String field, String error) {
+    this.field = field;
+    this.error = error;
+  }
+
+  public String getField() {
+    return field;
+  }
+
+  public void setField(String field) {
+    this.field = field;
+  }
+
+  public String getError() {
+    return error;
+  }
+
+  public void setError(String error) {
+    this.error = error;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    public FieldErrorMessage(String field, String error) {
-        this.field = field;
-        this.error = error;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    FieldErrorMessage that = (FieldErrorMessage) o;
+    return Objects.equals(field, that.field) &&
+        Objects.equals(error, that.error);
+  }
 
-    public String getField() {
-        return field;
-    }
+  @Override
+  public int hashCode() {
 
-    public void setField(String field) {
-        this.field = field;
-    }
+    return Objects.hash(field, error);
+  }
 
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
+  @Override
+  public String toString() {
+    return "FieldErrorMessage{" +
+        "field='" + field + '\'' +
+        ", error='" + error + '\'' +
+        '}';
+  }
 }

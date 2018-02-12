@@ -13,31 +13,31 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @EnableWebSecurity
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private TokenAuthFilter tokenAuthFilter;
+  @Autowired
+  private TokenAuthFilter tokenAuthFilter;
 
-    @Autowired
-    private TokenAuthProvider tokenAuthProvider;
+  @Autowired
+  private TokenAuthProvider tokenAuthProvider;
 
-    @Autowired
-    private AuthenticationEntryPoint authenticationEntryPoint;
+  @Autowired
+  private AuthenticationEntryPoint authenticationEntryPoint;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/auth/login").permitAll()
-                .antMatchers("/auth/session").permitAll()
-                .antMatchers("/user/register").permitAll()
-                .and()
-                .authorizeRequests().anyRequest().fullyAuthenticated()
-                .and()
-                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
-                .authenticationProvider(tokenAuthProvider)
-                .addFilterBefore(tokenAuthFilter, BasicAuthenticationFilter.class)
-                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
-    }
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .authorizeRequests()
+        .antMatchers("/auth/login").permitAll()
+        .antMatchers("/auth/session").permitAll()
+        .antMatchers("/user/register").permitAll()
+        .and()
+        .authorizeRequests().anyRequest().fullyAuthenticated()
+        .and()
+        .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        .and()
+        .authenticationProvider(tokenAuthProvider)
+        .addFilterBefore(tokenAuthFilter, BasicAuthenticationFilter.class)
+        .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
+  }
 }
