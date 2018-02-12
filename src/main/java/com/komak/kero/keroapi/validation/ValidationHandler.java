@@ -31,7 +31,7 @@ public class ValidationHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ResponseBody
   public FieldErrorMessage handleDuplicateKeyException(DuplicateKeyException ex) {
-    String field = ex.getMessage().substring(110).split(" ")[0];
+    String field = ex.getMessage().substring(ex.getMessage().indexOf("x:") + 3).split(" ")[0];
     return new FieldErrorMessage(field, FieldErrorMessage.DUPLICATE);
   }
 }
