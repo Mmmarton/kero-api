@@ -1,6 +1,5 @@
 package com.komak.kero.keroapi.user;
 
-import com.komak.kero.keroapi.auth.Role;
 import com.komak.kero.keroapi.auth.UserSession;
 
 public class UserAdapter {
@@ -35,7 +34,13 @@ public class UserAdapter {
     user.setPassword(model.getPassword());
     user.setNickname(model.getNickname());
     user.setEmail(model.getEmail());
-    user.setRole(Role.fromIndex(model.getRole()));
+    return user;
+  }
+
+  public static User toUser(UserInviteModel model) {
+    User user = new User();
+    user.setNickname(model.getNickname());
+    user.setEmail(model.getEmail());
     return user;
   }
 }

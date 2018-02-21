@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ErrorHandler {
 
   private static final String INVALID_DATA = "INVALID_DATA";
+  private static final String NO_INVITATION = "NO_INVITATION";
+  private static final String INVALID_INVITATION = "INVALID_INVITATION";
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -18,5 +20,21 @@ public class ErrorHandler {
   public ErrorMessage handleHttpMessageNotReadableException(
       HttpMessageNotReadableException exception) {
     return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_DATA);
+  }
+
+  @ExceptionHandler(NoInvitationException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseBody
+  public ErrorMessage handleNoInvitationException(
+      NoInvitationException exception) {
+    return new ErrorMessage(HttpStatus.BAD_REQUEST, NO_INVITATION);
+  }
+
+  @ExceptionHandler(InvalidInvitationException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseBody
+  public ErrorMessage handleInvalidInvitationException(
+      InvalidInvitationException exception) {
+    return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_INVITATION);
   }
 }

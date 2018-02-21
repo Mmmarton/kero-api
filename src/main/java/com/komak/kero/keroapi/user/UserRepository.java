@@ -9,4 +9,7 @@ interface UserRepository extends MongoRepository<User, String> {
 
   @Query("{ 'username' : ?0}")
   User findByUsername(String username);
+
+  @Query("{ 'email' : ?0}")
+  User findByEmail(String email);
 }

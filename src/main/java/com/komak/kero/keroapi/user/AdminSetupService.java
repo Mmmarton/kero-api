@@ -1,43 +1,34 @@
 package com.komak.kero.keroapi.user;
 
+import com.komak.kero.keroapi.auth.Role;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AdminSetupService {
 
-  private PasswordEncoder passwordEncoder;
-  private UserRepository userRepository;
+  private UserService userService;
 
   @Autowired
-  public AdminSetupService(PasswordEncoder passwordEncoder, UserRepository userRepository)
+  public AdminSetupService(UserService userService)
       throws IOException {
-    this.passwordEncoder = passwordEncoder;
-    this.userRepository = userRepository;
+    this.userService = userService;
 
-    if (userRepository.count() == 0) {
+    if (userService.getUserCount() == 0) {
       Resource resource = new ClassPathResource("admins");
       InputStream resourceInputStream = resource.getInputStream();
       Scanner scanner = new Scanner(resourceInputStream);
       while (scanner.hasNextLine()) {
-        insertUser(scanner.nextLine());
+        User user = new User();
+        user.setEmail(scanner.nextLine());
+        user.setRole(Role.ROLE_ADMIN);
+        userService.invite(user);
       }
     }
-  }
-
-  private void insertUser(String email) {
-    String password = passwordEncoder.encode("secret");
-    User user = new User();
-    user.setEmail(email);
-    user.setUsername(RandomStringUtils.random(10));
-    user.setPassword(password);
-    userRepository.save(user);
   }
 }
