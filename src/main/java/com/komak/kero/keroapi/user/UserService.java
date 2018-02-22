@@ -3,8 +3,8 @@ package com.komak.kero.keroapi.user;
 import com.komak.kero.keroapi.auth.Credentials;
 import com.komak.kero.keroapi.auth.Role;
 import com.komak.kero.keroapi.error.InvalidInvitationException;
-import com.komak.kero.keroapi.error.NoInvitationException;
 import com.komak.kero.keroapi.error.InvalidOperationException;
+import com.komak.kero.keroapi.error.NoInvitationException;
 import com.komak.kero.keroapi.user.model.UserRoleModel;
 import java.util.List;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -84,6 +84,16 @@ public class UserService {
     }
     else {
       throw new InvalidOperationException("Can't change an admin's role.");
+    }
+  }
+
+  public void delete(String email) {
+    User user = userRepository.findByEmail(email);
+    if (user.getRole() != Role.ROLE_ADMIN) {
+      userRepository.delete(user.getId());
+    }
+    else {
+      throw new InvalidOperationException("Can't remove an admin.");
     }
   }
 }
