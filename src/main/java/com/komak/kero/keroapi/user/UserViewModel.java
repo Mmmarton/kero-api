@@ -1,5 +1,6 @@
 package com.komak.kero.keroapi.user;
 
+import com.komak.kero.keroapi.auth.Role;
 import java.util.Objects;
 
 public class UserViewModel {
@@ -10,6 +11,7 @@ public class UserViewModel {
   private String lastName;
   private String email;
   private String picture;
+  private Role role;
 
   public String getToken() {
     return token;
@@ -57,6 +59,14 @@ public class UserViewModel {
 
   public void setPicture(String picture) {
     this.picture = picture;
+  }
+
+  public Role getRole() {
+    return role;
+  }
+
+  public void setRole(Role role) {
+    this.role = role;
   }
 
   @Override

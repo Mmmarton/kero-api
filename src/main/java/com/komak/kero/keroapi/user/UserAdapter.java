@@ -11,6 +11,7 @@ public class UserAdapter {
     model.setLastName(user.getLastName());
     model.setEmail(user.getEmail());
     model.setPicture(user.getPicture());
+    model.setRole(user.getRole());
     return model;
   }
 
