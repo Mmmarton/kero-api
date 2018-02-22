@@ -4,23 +4,23 @@ import java.util.Objects;
 
 public class UserSession {
 
-  private String id;
+  private String email;
   private Role role;
 
   public UserSession() {
   }
 
-  public UserSession(String id, Role role) {
-    this.id = id;
+  public UserSession(String email, Role role) {
+    this.email = email;
     this.role = role;
   }
 
-  public String getId() {
-    return id;
+  public String getEmail() {
+    return email;
   }
 
-  public void setId(String id) {
-    this.id = id;
+  public void setEmail(String email) {
+    this.email = email;
   }
 
   public Role getRole() {
@@ -40,11 +40,11 @@ public class UserSession {
       return false;
     }
     UserSession user = (UserSession) o;
-    return Objects.equals(id, user.id);
+    return Objects.equals(email, user.email);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id);
+    return Objects.hash(email);
   }
 }

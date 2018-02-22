@@ -1,4 +1,4 @@
-package com.komak.kero.keroapi.user;
+package com.komak.kero.keroapi.user.model;
 
 import com.komak.kero.keroapi.auth.Role;
 import java.util.Objects;

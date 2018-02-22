@@ -5,7 +5,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.komak.kero.keroapi.TestBase;
-import com.komak.kero.keroapi.auth.Credentials;
+import com.komak.kero.keroapi.user.model.UserCreateModel;
 import com.komak.kero.keroapi.validation.FieldErrorMessage;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;

@@ -1,6 +1,10 @@
 package com.komak.kero.keroapi.user;
 
 import com.komak.kero.keroapi.auth.UserSession;
+import com.komak.kero.keroapi.user.model.UserCreateModel;
+import com.komak.kero.keroapi.user.model.UserInviteModel;
+import com.komak.kero.keroapi.user.model.UserListModel;
+import com.komak.kero.keroapi.user.model.UserViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +30,7 @@ public class UserAdapter {
 
   public static UserSession toSession(User user) {
     UserSession session = new UserSession();
-    session.setId(user.getId());
+    session.setEmail(user.getEmail());
     session.setRole(user.getRole());
     return session;
   }

@@ -3,6 +3,9 @@ package com.komak.kero.keroapi.user;
 import com.komak.kero.keroapi.auth.AuthService;
 import com.komak.kero.keroapi.auth.Role;
 import com.komak.kero.keroapi.auth.UserSession;
+import com.komak.kero.keroapi.user.model.UserCreateModel;
+import com.komak.kero.keroapi.user.model.UserInviteModel;
+import com.komak.kero.keroapi.user.model.UserRoleModel;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,6 +50,18 @@ class UserController {
     UserSession session = authService.getSession();
     if (session.getRole() == Role.ROLE_ADMIN) {
       return new ResponseEntity(UserAdapter.toUserListModel(userService.list()), HttpStatus.OK);
+    }
+    else {
+      return new ResponseEntity("Not authorised.", HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  @RequestMapping(value = "/", method = RequestMethod.PUT)
+  public ResponseEntity<Object> changeRole(@RequestBody @Valid UserRoleModel userRole) {
+    UserSession session = authService.getSession();
+    if (session.getRole() == Role.ROLE_ADMIN) {
+      userService.changeRole(userRole);
+      return new ResponseEntity("Done.", HttpStatus.OK);
     }
     else {
       return new ResponseEntity("Not authorised.", HttpStatus.UNAUTHORIZED);

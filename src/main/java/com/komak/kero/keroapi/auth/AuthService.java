@@ -3,7 +3,7 @@ package com.komak.kero.keroapi.auth;
 import com.komak.kero.keroapi.user.User;
 import com.komak.kero.keroapi.user.UserAdapter;
 import com.komak.kero.keroapi.user.UserService;
-import com.komak.kero.keroapi.user.UserViewModel;
+import com.komak.kero.keroapi.user.model.UserViewModel;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

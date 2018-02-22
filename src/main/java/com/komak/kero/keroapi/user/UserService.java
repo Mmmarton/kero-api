@@ -4,6 +4,8 @@ import com.komak.kero.keroapi.auth.Credentials;
 import com.komak.kero.keroapi.auth.Role;
 import com.komak.kero.keroapi.error.InvalidInvitationException;
 import com.komak.kero.keroapi.error.NoInvitationException;
+import com.komak.kero.keroapi.error.InvalidOperationException;
+import com.komak.kero.keroapi.user.model.UserRoleModel;
 import java.util.List;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,5 +74,16 @@ public class UserService {
     }
 
     return oldUser;
+  }
+
+  public void changeRole(UserRoleModel userRole) {
+    User user = userRepository.findByEmail(userRole.getEmail());
+    if (user.getRole() != Role.ROLE_ADMIN) {
+      user.setRole(userRole.getRole());
+      userRepository.save(user);
+    }
+    else {
+      throw new InvalidOperationException("Can't change an admin's role.");
+    }
   }
 }

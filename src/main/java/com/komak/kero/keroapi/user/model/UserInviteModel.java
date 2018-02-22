@@ -1,10 +1,10 @@
-package com.komak.kero.keroapi.user;
+package com.komak.kero.keroapi.user.model;
 
 import com.komak.kero.keroapi.validation.FieldErrorMessage;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
-class UserInviteModel {
+public class UserInviteModel {
 
   @NotEmpty(message = FieldErrorMessage.EMPTY)
   @Length(min = 3, max = 20, message = FieldErrorMessage.INVALID_LENGTH)
