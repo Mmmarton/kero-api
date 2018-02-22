@@ -4,6 +4,7 @@ import com.komak.kero.keroapi.auth.Credentials;
 import com.komak.kero.keroapi.auth.Role;
 import com.komak.kero.keroapi.error.InvalidInvitationException;
 import com.komak.kero.keroapi.error.NoInvitationException;
+import java.util.List;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
@@ -56,6 +57,10 @@ public class UserService {
 
   public long getUserCount() {
     return userRepository.count();
+  }
+
+  public List<User> list() {
+    return userRepository.list();
   }
 
   private User merge(User oldUser, User newUser) {

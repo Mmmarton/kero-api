@@ -41,4 +41,15 @@ class UserController {
       return new ResponseEntity("Not authorised.", HttpStatus.UNAUTHORIZED);
     }
   }
+
+  @RequestMapping(value = "/list", method = RequestMethod.GET)
+  public ResponseEntity<Object> list() {
+    UserSession session = authService.getSession();
+    if (session.getRole() == Role.ROLE_ADMIN) {
+      return new ResponseEntity(UserAdapter.toUserListModel(userService.list()), HttpStatus.OK);
+    }
+    else {
+      return new ResponseEntity("Not authorised.", HttpStatus.UNAUTHORIZED);
+    }
+  }
 }

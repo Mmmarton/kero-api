@@ -1,6 +1,8 @@
 package com.komak.kero.keroapi.user;
 
 import com.komak.kero.keroapi.auth.UserSession;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserAdapter {
 
@@ -43,5 +45,20 @@ public class UserAdapter {
     user.setNickname(model.getNickname());
     user.setEmail(model.getEmail());
     return user;
+  }
+
+  public static List<UserListModel> toUserListModel(List<User> users) {
+    ArrayList<UserListModel> models = new ArrayList<>();
+
+    for (User user : users) {
+      UserListModel model = new UserListModel();
+      model.setEmail(user.getEmail());
+      model.setNickname(user.getNickname());
+      model.setPicture(user.getPicture());
+      model.setRole(user.getRole());
+      models.add(model);
+    }
+
+    return models;
   }
 }
