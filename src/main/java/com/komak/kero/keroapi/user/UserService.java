@@ -4,6 +4,7 @@ import com.komak.kero.keroapi.auth.Credentials;
 import com.komak.kero.keroapi.auth.Role;
 import com.komak.kero.keroapi.error.InvalidInvitationException;
 import com.komak.kero.keroapi.error.InvalidOperationException;
+import com.komak.kero.keroapi.error.InvalidUserException;
 import com.komak.kero.keroapi.error.NoInvitationException;
 import com.komak.kero.keroapi.user.model.UserRoleModel;
 import com.komak.kero.keroapi.user.model.UserUpdateModel;
@@ -136,9 +137,17 @@ public class UserService {
   public void updatePicture(MultipartFile picture, String email) {
     User user = userRepository.findByEmail(email);
     if (user.getPicture() != null) {
-      profilePictureService.deleteImage(user.getPicture());
+      profilePictureService.deletePicture(user.getPicture());
     }
-    user.setPicture(profilePictureService.saveImage(picture));
+    user.setPicture(profilePictureService.savePicture(picture));
     userRepository.save(user);
+  }
+
+  public byte[] getPicture(String email) {
+    User user = userRepository.findByEmail(email);
+    if (user == null) {
+      throw new InvalidUserException();
+    }
+    return profilePictureService.getPicture(user.getPicture());
   }
 }

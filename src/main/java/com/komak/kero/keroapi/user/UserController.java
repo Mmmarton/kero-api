@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -100,6 +101,11 @@ class UserController {
     UserSession session = authService.getSession();
     userService.updatePicture(picture, session.getEmail());
     return new ResponseEntity("Done.", HttpStatus.OK);
+  }
+
+  @RequestMapping(value = "/picture/{email:.+}", method = RequestMethod.GET)
+  byte[] getPicture(@PathVariable("email") String email) {
+    return userService.getPicture(email);
   }
 
   @RequestMapping(value = "/", method = RequestMethod.DELETE)
