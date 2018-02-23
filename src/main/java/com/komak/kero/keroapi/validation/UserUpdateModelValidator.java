@@ -1,0 +1,55 @@
+package com.komak.kero.keroapi.validation;
+
+import com.komak.kero.keroapi.user.model.UserUpdateModel;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+
+@Component
+public class UserUpdateModelValidator implements Validator {
+
+  public boolean supports(Class clazz) {
+    return UserUpdateModel.class.isAssignableFrom(clazz);
+  }
+
+  public void validate(Object target, Errors errors) {
+    UserUpdateModel user = (UserUpdateModel) target;
+    if (user.getPassword() != null) {
+      if (user.getPassword().length() < 12 || user.getPassword().length() > 30) {
+        errors.rejectValue("password", null, FieldErrorMessage.INVALID_LENGTH);
+      }
+      if (user.getOldPassword() == null) {
+        errors.rejectValue("oldPassword", null, FieldErrorMessage.EMPTY);
+      }
+    }
+    if (user.getOldPassword() != null) {
+      if (user.getOldPassword().length() < 12 || user.getOldPassword().length() > 30) {
+        errors.rejectValue("oldPassword", null, FieldErrorMessage.INVALID_LENGTH);
+      }
+      if (user.getPassword() == null) {
+        errors.rejectValue("password", null, FieldErrorMessage.EMPTY);
+      }
+    }
+    if (user.getNickname() != null) {
+      if (user.getNickname().length() < 3 || user.getNickname().length() > 20) {
+        errors.rejectValue("nickname", null, FieldErrorMessage.INVALID_LENGTH);
+      }
+    }
+    if (user.getFirstName() != null) {
+      if (user.getFirstName().length() < 3 || user.getFirstName().length() > 30) {
+        errors.rejectValue("firstName", null, FieldErrorMessage.INVALID_LENGTH);
+      }
+    }
+    if (user.getLastName() != null) {
+      if (user.getLastName().length() < 3 || user.getLastName().length() > 30) {
+        errors.rejectValue("lastName", null, FieldErrorMessage.INVALID_LENGTH);
+      }
+    }
+    if (user.getEmail() != null) {
+      if (user.getEmail().length() < 5 || user.getEmail().length() > 50) {
+        errors.rejectValue("email", null, FieldErrorMessage.INVALID_LENGTH);
+      }
+    }
+  }
+
+}

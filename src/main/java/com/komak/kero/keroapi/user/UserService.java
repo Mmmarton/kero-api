@@ -6,9 +6,11 @@ import com.komak.kero.keroapi.error.InvalidInvitationException;
 import com.komak.kero.keroapi.error.InvalidOperationException;
 import com.komak.kero.keroapi.error.NoInvitationException;
 import com.komak.kero.keroapi.user.model.UserRoleModel;
+import com.komak.kero.keroapi.user.model.UserUpdateModel;
 import java.util.List;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,9 +30,15 @@ public class UserService {
   @Autowired
   private InvitationMailService mailService;
 
+  @Autowired
+  private ProfilePictureService profilePictureService;
+
+  @Value("auth.user.salt")
+  private String userSalt;
+
   public User getByCredentials(Credentials credentials) {
     User user = userRepository.findByUsername(
-        usernameEncoder.encodePassword(credentials.getUsername(), credentials.getPassword()));
+        usernameEncoder.encodePassword(credentials.getUsername(), userSalt));
     if (user != null && passwordEncoder.matches(credentials.getPassword(), user.getPassword())) {
       return user;
     }
@@ -38,7 +46,7 @@ public class UserService {
   }
 
   public void create(User user, String inviteCode) {
-    user.setUsername(usernameEncoder.encodePassword(user.getUsername(), user.getPassword()));
+    user.setUsername(usernameEncoder.encodePassword(user.getUsername(), userSalt));
     user.setPassword(passwordEncoder.encode(user.getPassword()));
     User invitedUser = userRepository.findByEmail(user.getEmail());
     if (invitedUser == null) {
@@ -65,17 +73,6 @@ public class UserService {
     return userRepository.list();
   }
 
-  private User merge(User oldUser, User newUser) {
-    oldUser.setNickname(newUser.getNickname());
-    oldUser.setUsername(newUser.getUsername());
-    oldUser.setPassword(newUser.getPassword());
-    if (oldUser.getRole() == null) {
-      oldUser.setRole(Role.ROLE_GUEST);
-    }
-
-    return oldUser;
-  }
-
   public void changeRole(UserRoleModel userRole) {
     User user = userRepository.findByEmail(userRole.getEmail());
     if (user.getRole() != Role.ROLE_ADMIN) {
@@ -95,5 +92,47 @@ public class UserService {
     else {
       throw new InvalidOperationException("Can't remove an admin.");
     }
+  }
+
+  public void update(UserUpdateModel newUser) {
+    User user = userRepository.findByEmail(newUser.getEmail());
+    if (newUser.getOldPassword() != null || newUser.getPassword() != null) {
+      if (!passwordEncoder.matches(newUser.getOldPassword(), user.getPassword())) {
+        throw new InvalidOperationException("Wrong password.");
+      }
+      newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+    }
+    //    if (user.getPicture() != null) {
+    //      profilePictureService.deleteImage(user.getPicture());
+    //      user.setPicture(profilePictureService.saveImage(newUser.getPicture()));
+    //    }
+    userRepository.save(update(user, newUser));
+  }
+
+  private User update(User oldUser, UserUpdateModel newUser) {
+    if (newUser.getLastName() != null) {
+      oldUser.setLastName(newUser.getLastName());
+    }
+    if (newUser.getFirstName() != null) {
+      oldUser.setFirstName(newUser.getFirstName());
+    }
+    if (newUser.getNickname() != null) {
+      oldUser.setNickname(newUser.getNickname());
+    }
+    if (newUser.getPassword() != null) {
+      oldUser.setPassword(newUser.getPassword());
+    }
+    return oldUser;
+  }
+
+  private User merge(User oldUser, User newUser) {
+    oldUser.setNickname(newUser.getNickname());
+    oldUser.setUsername(newUser.getUsername());
+    oldUser.setPassword(newUser.getPassword());
+    if (oldUser.getRole() == null) {
+      oldUser.setRole(Role.ROLE_GUEST);
+    }
+
+    return oldUser;
   }
 }

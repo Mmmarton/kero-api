@@ -14,6 +14,7 @@ public class ErrorHandler {
   private static final String NO_INVITATION = "NO_INVITATION";
   private static final String INVALID_INVITATION = "INVALID_INVITATION";
   private static final String INVALID_OPERATION = "INVALID_OPERATION";
+  private static final String FILE_EXCEPTION = "FILE_EXCEPTION";
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -45,5 +46,13 @@ public class ErrorHandler {
   public ErrorMessage handleInvalidOperationException(
       InvalidOperationException exception) {
     return new ErrorMessage(HttpStatus.NOT_ACCEPTABLE, INVALID_OPERATION);
+  }
+
+  @ExceptionHandler(FileException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseBody
+  public ErrorMessage handleFileException(
+      FileException exception) {
+    return new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, FILE_EXCEPTION);
   }
 }

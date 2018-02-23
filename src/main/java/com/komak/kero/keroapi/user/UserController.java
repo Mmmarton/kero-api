@@ -7,10 +7,14 @@ import com.komak.kero.keroapi.user.model.UserCreateModel;
 import com.komak.kero.keroapi.user.model.UserDeleteModel;
 import com.komak.kero.keroapi.user.model.UserInviteModel;
 import com.komak.kero.keroapi.user.model.UserRoleModel;
+import com.komak.kero.keroapi.user.model.UserUpdateModel;
+import com.komak.kero.keroapi.validation.UserUpdateModelValidator;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +29,14 @@ class UserController {
 
   @Autowired
   private AuthService authService;
+
+  @Autowired
+  UserUpdateModelValidator userUpdateModelValidator;
+
+  @InitBinder
+  protected void initBinder(WebDataBinder binder) {
+    binder.setValidator(new UserUpdateModelValidator());
+  }
 
   @RequestMapping(value = "/register", method = RequestMethod.POST)
   public ResponseEntity<Object> register(@RequestBody @Valid UserCreateModel user) {
@@ -57,8 +69,8 @@ class UserController {
     }
   }
 
-  @RequestMapping(value = "/", method = RequestMethod.PUT)
-  public ResponseEntity<Object> changeRole(@RequestBody @Valid UserRoleModel userRole) {
+  @RequestMapping(value = "/role", method = RequestMethod.PUT)
+  public ResponseEntity<Object> update(@RequestBody @Valid UserRoleModel userRole) {
     UserSession session = authService.getSession();
     if (session.getRole() == Role.ROLE_ADMIN) {
       userService.changeRole(userRole);
@@ -67,6 +79,18 @@ class UserController {
     else {
       return new ResponseEntity("Not authorised.", HttpStatus.UNAUTHORIZED);
     }
+  }
+
+  @RequestMapping(value = "/", method = RequestMethod.PUT)
+  public ResponseEntity<Object> update(
+      @RequestBody @Valid UserUpdateModel user) {
+    //userUpdateModelValidator.validate(user, result);
+    UserSession session = authService.getSession();
+    if (!session.getEmail().equals(user.getEmail())) {
+      return new ResponseEntity("Not authorised.", HttpStatus.UNAUTHORIZED);
+    }
+    userService.update(user);
+    return new ResponseEntity("Done.", HttpStatus.OK);
   }
 
   @RequestMapping(value = "/", method = RequestMethod.DELETE)
