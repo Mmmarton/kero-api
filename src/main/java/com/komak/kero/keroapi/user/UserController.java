@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/user")
@@ -84,12 +86,19 @@ class UserController {
   @RequestMapping(value = "/", method = RequestMethod.PUT)
   public ResponseEntity<Object> update(
       @RequestBody @Valid UserUpdateModel user) {
-    //userUpdateModelValidator.validate(user, result);
     UserSession session = authService.getSession();
     if (!session.getEmail().equals(user.getEmail())) {
       return new ResponseEntity("Not authorised.", HttpStatus.UNAUTHORIZED);
     }
     userService.update(user);
+    return new ResponseEntity("Done.", HttpStatus.OK);
+  }
+
+  @RequestMapping(value = "/picture", method = RequestMethod.PUT)
+  public ResponseEntity<Object> updatePicture(
+      @RequestParam("picture") MultipartFile picture) {
+    UserSession session = authService.getSession();
+    userService.updatePicture(picture, session.getEmail());
     return new ResponseEntity("Done.", HttpStatus.OK);
   }
 

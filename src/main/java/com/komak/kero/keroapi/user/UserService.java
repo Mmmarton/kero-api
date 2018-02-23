@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UserService {
@@ -102,10 +103,6 @@ public class UserService {
       }
       newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
     }
-    //    if (user.getPicture() != null) {
-    //      profilePictureService.deleteImage(user.getPicture());
-    //      user.setPicture(profilePictureService.saveImage(newUser.getPicture()));
-    //    }
     userRepository.save(update(user, newUser));
   }
 
@@ -134,5 +131,14 @@ public class UserService {
     }
 
     return oldUser;
+  }
+
+  public void updatePicture(MultipartFile picture, String email) {
+    User user = userRepository.findByEmail(email);
+    if (user.getPicture() != null) {
+      profilePictureService.deleteImage(user.getPicture());
+    }
+    user.setPicture(profilePictureService.saveImage(picture));
+    userRepository.save(user);
   }
 }
