@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.imageio.ImageIO;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.log4j.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ProfilePictureService {
-
-  private static final Logger LOG = Logger.getLogger(ProfilePictureService.class);
 
   @Value("${profile.pictures.folder}")
   private String profilePicturesFolder;
@@ -33,7 +30,6 @@ public class ProfilePictureService {
       Files.write(file, toJPG(picture.getInputStream()));
     }
     catch (Exception e) {
-      LOG.error("Failed to save profile picture.", e);
       throw new FileException("Failed to save profile picture.");
     }
 
@@ -45,7 +41,6 @@ public class ProfilePictureService {
       Files.delete(Paths.get(profilePicturesFolder + picture));
     }
     catch (IOException e) {
-      LOG.error("Failed to delete profile picture.", e);
       throw new FileException("Failed to delete profile picture.");
     }
   }
@@ -60,7 +55,6 @@ public class ProfilePictureService {
       output.write(bytes);
     }
     catch (IOException e) {
-      LOG.error("Failed to read profile picture.", e);
       throw new FileException("Failed to read profile picture.");
 
     }
@@ -79,7 +73,6 @@ public class ProfilePictureService {
       ImageIO.write(newBufferedImage, "jpg", outputStream);
     }
     catch (IOException e) {
-      LOG.error("Failed to convert profile picture.", e);
       throw new FileException("Failed to convert profile picture.");
     }
     return outputStream.toByteArray();

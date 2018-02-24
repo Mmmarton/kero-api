@@ -27,12 +27,6 @@ class AuthController {
     }
   }
 
-  @RequestMapping(value = "/status", method = RequestMethod.GET)
-  public ResponseEntity<Object> getStatus() {
-    UserSession session = authService.getSession();
-    return new ResponseEntity(session, HttpStatus.OK);
-  }
-
   @RequestMapping(value = "/session", method = RequestMethod.GET)
   public String getSession() {
     return "Here you are.";
