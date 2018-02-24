@@ -6,6 +6,7 @@ import com.komak.kero.keroapi.auth.UserSession;
 import com.komak.kero.keroapi.event.Event;
 import com.komak.kero.keroapi.event.EventService;
 import com.komak.kero.keroapi.image.model.ImageCreateModel;
+import com.komak.kero.keroapi.image.model.ImageDeleteModel;
 import com.komak.kero.keroapi.image.model.ImageListModel;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,11 +63,11 @@ public class ImageController {
     return new ResponseEntity(imageService.getImageFile(path), HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/{eventId}", method = RequestMethod.DELETE)
-  public ResponseEntity<Object> delete(@PathVariable String eventId) {
-    //    UserSession session = authService.getSession();
-    //    EventDeleteModel eventDelete = new EventDeleteModel(eventId, session);
-    //    imageService.delete(eventDelete);
+  @RequestMapping(value = "/{imageId}", method = RequestMethod.DELETE)
+  public ResponseEntity<Object> delete(@PathVariable String imageId) {
+    UserSession session = authService.getSession();
+    ImageDeleteModel imageDeleteModel = new ImageDeleteModel(imageId, session);
+    imageService.delete(imageDeleteModel);
     return new ResponseEntity("Done.", HttpStatus.OK);
   }
 

@@ -24,9 +24,10 @@ public class ImageService {
   }
 
   public void delete(ImageDeleteModel imageDelete) {
-    String authorId = imageRepository.findOne(imageDelete.getImageId()).getAuthorId();
-    if (authorId.equals(imageDelete.getIssuerId()) || imageDelete.isAdmin()) {
+    Image image = imageRepository.findOne(imageDelete.getImageId());
+    if (image.getAuthorId().equals(imageDelete.getIssuerId()) || imageDelete.isAdmin()) {
       imageRepository.delete(imageDelete.getImageId());
+      imageFileService.deleteImage(image.getImagePath());
     }
     else {
       throw new UnauthorisedException("Can't delete other user's image.");
