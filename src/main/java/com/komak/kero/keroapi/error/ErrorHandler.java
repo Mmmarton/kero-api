@@ -42,7 +42,7 @@ public class ErrorHandler {
   }
 
   @ExceptionHandler(InvalidOperationException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
   @ResponseBody
   public ErrorMessage handleInvalidOperationException(
       InvalidOperationException exception) {

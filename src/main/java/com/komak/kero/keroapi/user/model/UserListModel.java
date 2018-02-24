@@ -6,7 +6,6 @@ public class UserListModel {
 
   private String nickname;
   private String email;
-  private String picture;
   private Role role;
 
   public String getNickname() {
@@ -23,14 +22,6 @@ public class UserListModel {
 
   public void setEmail(String email) {
     this.email = email;
-  }
-
-  public String getPicture() {
-    return picture;
-  }
-
-  public void setPicture(String picture) {
-    this.picture = picture;
   }
 
   public Role getRole() {

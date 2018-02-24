@@ -4,17 +4,18 @@ import com.komak.kero.keroapi.auth.AuthService;
 import com.komak.kero.keroapi.auth.Role;
 import com.komak.kero.keroapi.auth.UserSession;
 import com.komak.kero.keroapi.user.model.UserCreateModel;
-import com.komak.kero.keroapi.user.model.UserDeleteModel;
 import com.komak.kero.keroapi.user.model.UserInviteModel;
 import com.komak.kero.keroapi.user.model.UserRoleModel;
 import com.komak.kero.keroapi.user.model.UserUpdateModel;
+import com.komak.kero.keroapi.validation.FieldErrorMessage;
 import com.komak.kero.keroapi.validation.UserUpdateModelValidator;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,11 +36,6 @@ class UserController {
 
   @Autowired
   UserUpdateModelValidator userUpdateModelValidator;
-
-  @InitBinder
-  protected void initBinder(WebDataBinder binder) {
-    binder.setValidator(new UserUpdateModelValidator());
-  }
 
   @RequestMapping(value = "/register", method = RequestMethod.POST)
   public ResponseEntity<Object> register(@RequestBody @Valid UserCreateModel user) {
@@ -86,7 +82,15 @@ class UserController {
 
   @RequestMapping(value = "/", method = RequestMethod.PUT)
   public ResponseEntity<Object> update(
-      @RequestBody @Valid UserUpdateModel user) {
+      @RequestBody @Valid UserUpdateModel user, BindingResult result) {
+
+    userUpdateModelValidator.validate(user, result);
+    if (result.hasFieldErrors()) {
+      List<FieldErrorMessage> fieldErrors = result.getFieldErrors().stream()
+          .map(FieldErrorMessage::new).collect(Collectors.toList());
+      return new ResponseEntity(fieldErrors, HttpStatus.BAD_REQUEST);
+    }
+
     UserSession session = authService.getSession();
     if (!session.getEmail().equals(user.getEmail())) {
       return new ResponseEntity("Not authorised.", HttpStatus.UNAUTHORIZED);
@@ -108,11 +112,11 @@ class UserController {
     return userService.getPicture(email);
   }
 
-  @RequestMapping(value = "/", method = RequestMethod.DELETE)
-  public ResponseEntity<Object> delete(@RequestBody UserDeleteModel user) {
+  @RequestMapping(value = "/{email:.+}", method = RequestMethod.DELETE)
+  public ResponseEntity<Object> delete(@PathVariable("email") String email) {
     UserSession session = authService.getSession();
     if (session.getRole() == Role.ROLE_ADMIN) {
-      userService.delete(user.getEmail());
+      userService.delete(email);
       return new ResponseEntity("Done.", HttpStatus.OK);
     }
     else {

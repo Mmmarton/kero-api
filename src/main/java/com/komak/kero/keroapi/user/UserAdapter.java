@@ -58,7 +58,6 @@ public class UserAdapter {
       UserListModel model = new UserListModel();
       model.setEmail(user.getEmail());
       model.setNickname(user.getNickname());
-      model.setPicture(user.getPicture());
       model.setRole(user.getRole());
       models.add(model);
     }

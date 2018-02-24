@@ -1,6 +1,7 @@
 package com.komak.kero.keroapi.validation;
 
 import java.util.Objects;
+import org.springframework.validation.FieldError;
 
 public class FieldErrorMessage {
 
@@ -13,6 +14,11 @@ public class FieldErrorMessage {
   private String error;
 
   public FieldErrorMessage() {
+  }
+
+  public FieldErrorMessage(FieldError error) {
+    field = error.getField();
+    this.error = error.getDefaultMessage();
   }
 
   public FieldErrorMessage(String field, String error) {

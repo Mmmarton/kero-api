@@ -145,9 +145,13 @@ public class UserService {
 
   public byte[] getPicture(String email) {
     User user = userRepository.findByEmail(email);
+    byte[] picture = null;
     if (user == null) {
       throw new InvalidUserException();
     }
-    return profilePictureService.getPicture(user.getPicture());
+    if (user.getPicture() != null) {
+      picture = profilePictureService.getPicture(user.getPicture());
+    }
+    return picture;
   }
 }
