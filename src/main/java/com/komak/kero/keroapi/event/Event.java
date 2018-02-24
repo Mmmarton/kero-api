@@ -1,7 +1,10 @@
 package com.komak.kero.keroapi.event;
 
+import com.komak.kero.keroapi.image.Image;
+import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
@@ -14,6 +17,8 @@ public class Event {
   private long date;
   private String description;
   private String authorId;
+  @DBRef(lazy = true)
+  private List<Image> images;
 
   public String getId() {
     return id;
@@ -53,5 +58,13 @@ public class Event {
 
   public void setAuthorId(String authorId) {
     this.authorId = authorId;
+  }
+
+  public List<Image> getImages() {
+    return images;
+  }
+
+  public void setImages(List<Image> images) {
+    this.images = images;
   }
 }

@@ -16,12 +16,12 @@ public class ImageService {
   @Autowired
   ImageFileService imageFileService;
 
-  public void create(ImageCreateModel imageCreateModel) {
+  public Image create(ImageCreateModel imageCreateModel) {
     String imagePath = imageFileService.saveImage(imageCreateModel);
     Image image = new Image();
     image.setImagePath(imagePath);
     image.setAuthorId(imageCreateModel.getAuthorId());
-    imageRepository.save(image);
+    return imageRepository.save(image);
   }
 
   public List<Image> list() {

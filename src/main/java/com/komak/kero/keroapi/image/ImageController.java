@@ -3,7 +3,7 @@ package com.komak.kero.keroapi.image;
 import com.komak.kero.keroapi.auth.AuthService;
 import com.komak.kero.keroapi.auth.Role;
 import com.komak.kero.keroapi.auth.UserSession;
-import com.komak.kero.keroapi.error.InvalidEventException;
+import com.komak.kero.keroapi.event.Event;
 import com.komak.kero.keroapi.event.EventService;
 import com.komak.kero.keroapi.image.model.ImageCreateModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +34,10 @@ public class ImageController {
       @RequestParam("image") MultipartFile imageFile) {
     UserSession session = authService.getSession();
     if (session.getRole() == Role.ROLE_ADMIN || session.getRole() == Role.ROLE_MEMBER) {
-      if (!eventService.exists(eventId)) {
-        throw new InvalidEventException();
-      }
+      Event event = eventService.getEvent(eventId);
       ImageCreateModel model = new ImageCreateModel(eventId, imageFile, session.getId());
-      imageService.create(model);
+      Image image = imageService.create(model);
+      eventService.addImage(event, image);
       return new ResponseEntity("Done.", HttpStatus.OK);
     }
     else {
