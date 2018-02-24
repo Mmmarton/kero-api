@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public class UserSession {
 
+  private String id;
   private String email;
   private Role role;
 
@@ -13,6 +14,14 @@ public class UserSession {
   public UserSession(String email, Role role) {
     this.email = email;
     this.role = role;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String getEmail() {

@@ -28,6 +28,7 @@ public class UserAdapter {
 
   public static UserSession toSession(User user) {
     UserSession session = new UserSession();
+    session.setId(user.getId());
     session.setEmail(user.getEmail());
     session.setRole(user.getRole());
     return session;

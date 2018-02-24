@@ -13,6 +13,7 @@ public class Event {
   private String title;
   private long date;
   private String description;
+  private String authorId;
 
   public String getId() {
     return id;
@@ -44,5 +45,13 @@ public class Event {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public String getAuthorId() {
+    return authorId;
+  }
+
+  public void setAuthorId(String authorId) {
+    this.authorId = authorId;
   }
 }

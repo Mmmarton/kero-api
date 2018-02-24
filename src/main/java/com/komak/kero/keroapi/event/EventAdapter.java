@@ -9,6 +9,7 @@ public class EventAdapter {
     Event event = new Event();
     event.setTitle(model.getTitle());
     event.setDate(model.getDate());
+    event.setAuthorId(model.getAuthorId());
     return event;
   }
 

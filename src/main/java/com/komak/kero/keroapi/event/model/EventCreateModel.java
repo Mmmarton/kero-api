@@ -10,6 +10,7 @@ public class EventCreateModel {
   @Length(min = 3, max = 40, message = FieldErrorMessage.INVALID_LENGTH)
   private String title;
   private long date;
+  private String authorId;
 
   public String getTitle() {
     return title;
@@ -25,5 +26,13 @@ public class EventCreateModel {
 
   public void setDate(long date) {
     this.date = date;
+  }
+
+  public String getAuthorId() {
+    return authorId;
+  }
+
+  public void setAuthorId(String authorId) {
+    this.authorId = authorId;
   }
 }
