@@ -3,7 +3,7 @@ package com.komak.kero.keroapi.user;
 import com.komak.kero.keroapi.auth.Credentials;
 import com.komak.kero.keroapi.auth.Role;
 import com.komak.kero.keroapi.error.InvalidInvitationException;
-import com.komak.kero.keroapi.error.InvalidOperationException;
+import com.komak.kero.keroapi.error.UnauthorisedException;
 import com.komak.kero.keroapi.error.InvalidUserException;
 import com.komak.kero.keroapi.error.NoInvitationException;
 import com.komak.kero.keroapi.user.model.UserRoleModel;
@@ -82,7 +82,7 @@ public class UserService {
       userRepository.save(user);
     }
     else {
-      throw new InvalidOperationException("Can't change an admin's role.");
+      throw new UnauthorisedException("Can't change an admin's role.");
     }
   }
 
@@ -92,7 +92,7 @@ public class UserService {
       userRepository.delete(user.getId());
     }
     else {
-      throw new InvalidOperationException("Can't remove an admin.");
+      throw new UnauthorisedException("Can't remove an admin.");
     }
   }
 
@@ -100,7 +100,7 @@ public class UserService {
     User user = userRepository.findByEmail(newUser.getEmail());
     if (newUser.getOldPassword() != null || newUser.getPassword() != null) {
       if (!passwordEncoder.matches(newUser.getOldPassword(), user.getPassword())) {
-        throw new InvalidOperationException("Wrong password.");
+        throw new UnauthorisedException("Wrong password.");
       }
       newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
     }

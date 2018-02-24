@@ -16,9 +16,10 @@ public class ErrorHandler {
   private static final String INVALID_DATA = "INVALID_DATA";
   private static final String NO_INVITATION = "NO_INVITATION";
   private static final String INVALID_INVITATION = "INVALID_INVITATION";
-  private static final String INVALID_OPERATION = "INVALID_OPERATION";
+  private static final String UNAUTHORISED = "UNAUTHORISED";
   private static final String FILE_EXCEPTION = "FILE_EXCEPTION";
   private static final String INVALID_USER = "INVALID_USER";
+  private static final String INVALID_EVENT = "INVALID_EVENT";
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -47,13 +48,13 @@ public class ErrorHandler {
     return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_INVITATION);
   }
 
-  @ExceptionHandler(InvalidOperationException.class)
+  @ExceptionHandler(UnauthorisedException.class)
   @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
   @ResponseBody
-  public ErrorMessage handleInvalidOperationException(
-      InvalidOperationException exception) {
-    LOG.warn(INVALID_OPERATION, exception);
-    return new ErrorMessage(HttpStatus.NOT_ACCEPTABLE, INVALID_OPERATION);
+  public ErrorMessage handleUnauthorisedException(
+      UnauthorisedException exception) {
+    LOG.warn(UNAUTHORISED, exception);
+    return new ErrorMessage(HttpStatus.NOT_ACCEPTABLE, UNAUTHORISED);
   }
 
   @ExceptionHandler(FileException.class)
@@ -72,5 +73,14 @@ public class ErrorHandler {
       InvalidUserException exception) {
     LOG.warn(INVALID_USER, exception);
     return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_USER);
+  }
+
+  @ExceptionHandler(InvalidEventException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseBody
+  public ErrorMessage handleInvalidEventException(
+      InvalidEventException exception) {
+    LOG.warn(INVALID_EVENT, exception);
+    return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_EVENT);
   }
 }

@@ -1,6 +1,7 @@
 package com.komak.kero.keroapi.event;
 
-import com.komak.kero.keroapi.error.InvalidOperationException;
+import com.komak.kero.keroapi.error.InvalidEventException;
+import com.komak.kero.keroapi.error.UnauthorisedException;
 import com.komak.kero.keroapi.event.model.EventDeleteModel;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,24 @@ public class EventService {
       eventRepository.delete(eventDelete.getEventId());
     }
     else {
-      throw new InvalidOperationException("Can't delete other user's event.");
+      throw new UnauthorisedException("Can't delete other user's event.");
     }
+  }
+
+  public void update(Event event) {
+    Event oldEvent = eventRepository.findOne(event.getId());
+    if (oldEvent == null) {
+      throw new InvalidEventException();
+    }
+    eventRepository.save(update(oldEvent, event));
+  }
+
+  private Event update(Event oldEvent, Event newEvent) {
+    oldEvent.setTitle(newEvent.getTitle());
+    oldEvent.setDate(newEvent.getDate());
+    if (newEvent.getDescription() != null) {
+      oldEvent.setDescription(newEvent.getDescription());
+    }
+    return oldEvent;
   }
 }

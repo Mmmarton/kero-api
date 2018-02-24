@@ -39,18 +39,18 @@ class UserController {
   UserUpdateModelValidator userUpdateModelValidator;
 
   @RequestMapping(value = "/register", method = RequestMethod.POST)
-  public ResponseEntity<Object> register(@RequestBody @Valid UserCreateModel user) {
+  public ResponseEntity<Object> register(@RequestBody @Valid UserCreateModel userCreateModel) {
 
-    userService.create(UserAdapter.toUser(user), user.getInviteCode());
+    userService.create(UserAdapter.toUser(userCreateModel), userCreateModel.getInviteCode());
 
     return new ResponseEntity("Done.", HttpStatus.OK);
   }
 
   @RequestMapping(value = "/invite", method = RequestMethod.POST)
-  public ResponseEntity<Object> invite(@RequestBody @Valid UserInviteModel user) {
+  public ResponseEntity<Object> invite(@RequestBody @Valid UserInviteModel userInviteModel) {
     UserSession session = authService.getSession();
     if (session.getRole() == Role.ROLE_ADMIN) {
-      userService.invite(UserAdapter.toUser(user));
+      userService.invite(UserAdapter.toUser(userInviteModel));
       return new ResponseEntity("Done.", HttpStatus.OK);
     }
     else {
@@ -72,10 +72,10 @@ class UserController {
   }
 
   @RequestMapping(value = "/role", method = RequestMethod.PUT)
-  public ResponseEntity<Object> update(@RequestBody @Valid UserRoleModel userRole) {
+  public ResponseEntity<Object> update(@RequestBody @Valid UserRoleModel userRoleModel) {
     UserSession session = authService.getSession();
     if (session.getRole() == Role.ROLE_ADMIN) {
-      userService.changeRole(userRole);
+      userService.changeRole(userRoleModel);
       return new ResponseEntity("Done.", HttpStatus.OK);
     }
     else {
@@ -85,9 +85,9 @@ class UserController {
 
   @RequestMapping(value = "/", method = RequestMethod.PUT)
   public ResponseEntity<Object> update(
-      @RequestBody @Valid UserUpdateModel user, BindingResult result) {
+      @RequestBody @Valid UserUpdateModel userUpdateModel, BindingResult result) {
 
-    userUpdateModelValidator.validate(user, result);
+    userUpdateModelValidator.validate(userUpdateModel, result);
     if (result.hasFieldErrors()) {
       List<FieldErrorMessage> fieldErrors = result.getFieldErrors().stream()
           .map(FieldErrorMessage::new).collect(Collectors.toList());
@@ -95,10 +95,10 @@ class UserController {
     }
 
     UserSession session = authService.getSession();
-    if (!session.getEmail().equals(user.getEmail())) {
+    if (!session.getEmail().equals(userUpdateModel.getEmail())) {
       return new ResponseEntity("Not authorised.", HttpStatus.UNAUTHORIZED);
     }
-    userService.update(user);
+    userService.update(userUpdateModel);
     return new ResponseEntity("Done.", HttpStatus.OK);
   }
 

@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class EventCreateModel {
 
   @NotEmpty(message = FieldErrorMessage.EMPTY)
-  @Length(min = 3, max = 40, message = FieldErrorMessage.INVALID_LENGTH)
+  @Length(min = 3, max = 50, message = FieldErrorMessage.INVALID_LENGTH)
   private String title;
   private long date;
   private String authorId;
