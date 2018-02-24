@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartException;
 
 @ControllerAdvice
 public class ErrorHandler {
@@ -20,6 +21,7 @@ public class ErrorHandler {
   private static final String FILE_EXCEPTION = "FILE_EXCEPTION";
   private static final String INVALID_USER = "INVALID_USER";
   private static final String INVALID_EVENT = "INVALID_EVENT";
+  private static final String INVALID_FILE = "INVALID_FILE";
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -62,7 +64,6 @@ public class ErrorHandler {
   @ResponseBody
   public ErrorMessage handleFileException(
       FileException exception) {
-    LOG.warn(FILE_EXCEPTION, exception);
     return new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, FILE_EXCEPTION);
   }
 
@@ -82,5 +83,14 @@ public class ErrorHandler {
       InvalidEventException exception) {
     LOG.warn(INVALID_EVENT, exception);
     return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_EVENT);
+  }
+
+  @ExceptionHandler(MultipartException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseBody
+  public ErrorMessage handleMultipartException(
+      MultipartException exception) {
+    LOG.warn(INVALID_FILE, exception);
+    return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_FILE);
   }
 }

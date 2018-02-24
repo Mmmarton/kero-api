@@ -39,6 +39,10 @@ public class EventService {
     eventRepository.save(update(oldEvent, event));
   }
 
+  public boolean exists(String id) {
+    return id != null && eventRepository.findOne(id) != null;
+  }
+
   private Event update(Event oldEvent, Event newEvent) {
     oldEvent.setTitle(newEvent.getTitle());
     oldEvent.setDate(newEvent.getDate());

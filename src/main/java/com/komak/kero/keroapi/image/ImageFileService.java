@@ -1,6 +1,7 @@
-package com.komak.kero.keroapi.user;
+package com.komak.kero.keroapi.image;
 
 import com.komak.kero.keroapi.error.FileException;
+import com.komak.kero.keroapi.image.model.ImageCreateModel;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -15,53 +16,56 @@ import org.apache.log4j.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public class ProfilePictureService {
+public class ImageFileService {
 
-  private static final Logger LOG = Logger.getLogger(ProfilePictureService.class);
+  private static final Logger LOG = Logger.getLogger(ImageFileService.class);
 
-  @Value("${profile.pictures.folder}")
-  private String profilePicturesFolder;
+  @Value("${images.folder}")
+  private String imagesFolder;
 
-  public String savePicture(MultipartFile picture) {
-    String filename = RandomStringUtils.randomAlphanumeric(30) + ".jpg";
-
+  public String saveImage(ImageCreateModel imageCreateModel) {
+    String filename =
+        imageCreateModel.getEventId() + "/" + RandomStringUtils.randomAlphanumeric(30) + ".jpg";
     try {
-      Path file = Paths.get(profilePicturesFolder + filename);
-      Files.write(file, toJPG(picture.getInputStream()));
+      Path eventPath = Paths.get(imagesFolder + imageCreateModel.getEventId());
+      if (!Files.exists(eventPath)) {
+        Files.createDirectory(eventPath);
+      }
+      Path file = Paths.get(imagesFolder + filename);
+      Files.write(file, toJPG(imageCreateModel.getImageFile().getInputStream()));
     }
     catch (Exception e) {
-      LOG.error("Profile picture file error", e);
-      throw new FileException("Failed to save profile picture.");
+      LOG.error("File operation error", e);
+      throw new FileException("Failed to save image.");
     }
 
     return filename;
   }
 
-  public void deletePicture(String picture) {
+  public void deleteImage(String imagePath) {
     try {
-      Files.delete(Paths.get(profilePicturesFolder + picture));
+      Files.delete(Paths.get(imagesFolder + imagePath));
     }
     catch (IOException e) {
-      LOG.error("Profile picture file error", e);
-      throw new FileException("Failed to delete profile picture.");
+      LOG.error("File operation error", e);
+      throw new FileException("Failed to delete image.");
     }
   }
 
-  public byte[] getPicture(String picture) {
+  public byte[] getImage(String imagePath) {
     ByteArrayOutputStream output = new ByteArrayOutputStream();
     try {
-      byte[] bytes = Files.readAllBytes(Paths.get(profilePicturesFolder + picture));
+      byte[] bytes = Files.readAllBytes(Paths.get(imagesFolder + imagePath));
       bytes = Base64.encodeBase64(bytes);
 
       output.write(("data:image/jpg;base64,").getBytes());
       output.write(bytes);
     }
     catch (IOException e) {
-      LOG.error("Profile picture file error", e);
-      throw new FileException("Failed to read profile picture.");
+      LOG.error("File operation error", e);
+      throw new FileException("Failed to read image.");
 
     }
     return output.toByteArray();
@@ -79,7 +83,7 @@ public class ProfilePictureService {
       ImageIO.write(newBufferedImage, "jpg", outputStream);
     }
     catch (IOException e) {
-      LOG.error("Profile picture file error", e);
+      LOG.error("File operation error", e);
       throw new FileException("Failed to convert profile picture.");
     }
     return outputStream.toByteArray();
