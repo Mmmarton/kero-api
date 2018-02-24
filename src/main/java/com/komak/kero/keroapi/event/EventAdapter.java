@@ -1,6 +1,7 @@
 package com.komak.kero.keroapi.event;
 
 import com.komak.kero.keroapi.event.model.EventCreateModel;
+import com.komak.kero.keroapi.event.model.EventListModel;
 
 public class EventAdapter {
 
@@ -9,6 +10,15 @@ public class EventAdapter {
     event.setTitle(model.getTitle());
     event.setDate(model.getDate());
     return event;
+  }
+
+  public static EventListModel toListModel(Event event) {
+    EventListModel model = new EventListModel();
+    model.setId(event.getId());
+    model.setTitle(event.getTitle());
+    model.setDate(event.getDate());
+    model.setDescription(event.getDescription());
+    return model;
   }
 
 }

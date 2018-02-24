@@ -4,6 +4,9 @@ import com.komak.kero.keroapi.auth.AuthService;
 import com.komak.kero.keroapi.auth.Role;
 import com.komak.kero.keroapi.auth.UserSession;
 import com.komak.kero.keroapi.event.model.EventCreateModel;
+import com.komak.kero.keroapi.event.model.EventListModel;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +36,13 @@ public class EventController {
     else {
       return new ResponseEntity("Not authorised.", HttpStatus.UNAUTHORIZED);
     }
+  }
+
+  @RequestMapping(value = "/", method = RequestMethod.GET)
+  public ResponseEntity<Object> getList() {
+    List<EventListModel> list = eventService.list().stream().map(EventAdapter::toListModel)
+        .collect(Collectors.toList());
+    return new ResponseEntity(list, HttpStatus.OK);
   }
 
 }

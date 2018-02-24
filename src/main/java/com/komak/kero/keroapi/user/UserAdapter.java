@@ -5,8 +5,6 @@ import com.komak.kero.keroapi.user.model.UserCreateModel;
 import com.komak.kero.keroapi.user.model.UserInviteModel;
 import com.komak.kero.keroapi.user.model.UserListModel;
 import com.komak.kero.keroapi.user.model.UserViewModel;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserAdapter {
 
@@ -51,17 +49,11 @@ public class UserAdapter {
     return user;
   }
 
-  public static List<UserListModel> toUserListModel(List<User> users) {
-    ArrayList<UserListModel> models = new ArrayList<>();
-
-    for (User user : users) {
-      UserListModel model = new UserListModel();
-      model.setEmail(user.getEmail());
-      model.setNickname(user.getNickname());
-      model.setRole(user.getRole());
-      models.add(model);
-    }
-
-    return models;
+  public static UserListModel toListModel(User user) {
+    UserListModel model = new UserListModel();
+    model.setEmail(user.getEmail());
+    model.setNickname(user.getNickname());
+    model.setRole(user.getRole());
+    return model;
   }
 }

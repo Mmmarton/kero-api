@@ -1,5 +1,6 @@
 package com.komak.kero.keroapi.event;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,5 +12,9 @@ public class EventService {
 
   public void create(Event event) {
     eventRepository.save(event);
+  }
+
+  public List<Event> list() {
+    return eventRepository.findAll();
   }
 }

@@ -5,6 +5,7 @@ import com.komak.kero.keroapi.auth.Role;
 import com.komak.kero.keroapi.auth.UserSession;
 import com.komak.kero.keroapi.user.model.UserCreateModel;
 import com.komak.kero.keroapi.user.model.UserInviteModel;
+import com.komak.kero.keroapi.user.model.UserListModel;
 import com.komak.kero.keroapi.user.model.UserRoleModel;
 import com.komak.kero.keroapi.user.model.UserUpdateModel;
 import com.komak.kero.keroapi.validation.FieldErrorMessage;
@@ -61,7 +62,9 @@ class UserController {
   public ResponseEntity<Object> list() {
     UserSession session = authService.getSession();
     if (session.getRole() == Role.ROLE_ADMIN) {
-      return new ResponseEntity(UserAdapter.toUserListModel(userService.list()), HttpStatus.OK);
+      List<UserListModel> list = userService.list().stream().map(UserAdapter::toListModel)
+          .collect(Collectors.toList());
+      return new ResponseEntity(list, HttpStatus.OK);
     }
     else {
       return new ResponseEntity("Not authorised.", HttpStatus.UNAUTHORIZED);

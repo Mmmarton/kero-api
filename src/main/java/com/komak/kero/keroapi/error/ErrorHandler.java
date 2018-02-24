@@ -1,6 +1,5 @@
 package com.komak.kero.keroapi.error;
 
-import com.komak.kero.keroapi.user.InvitationMailService;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class ErrorHandler {
 
-  private static final Logger LOG = Logger.getLogger(InvitationMailService.class);
+  private static final Logger LOG = Logger.getLogger(ErrorHandler.class);
 
   private static final String INVALID_DATA = "INVALID_DATA";
   private static final String NO_INVITATION = "NO_INVITATION";
@@ -26,7 +25,7 @@ public class ErrorHandler {
   @ResponseBody
   public ErrorMessage handleHttpMessageNotReadableException(
       HttpMessageNotReadableException exception) {
-    LOG.warn(exception);
+    LOG.warn(INVALID_DATA, exception);
     return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_DATA);
   }
 
@@ -35,7 +34,7 @@ public class ErrorHandler {
   @ResponseBody
   public ErrorMessage handleNoInvitationException(
       NoInvitationException exception) {
-    LOG.warn(exception);
+    LOG.warn(NO_INVITATION, exception);
     return new ErrorMessage(HttpStatus.BAD_REQUEST, NO_INVITATION);
   }
 
@@ -44,7 +43,7 @@ public class ErrorHandler {
   @ResponseBody
   public ErrorMessage handleInvalidInvitationException(
       InvalidInvitationException exception) {
-    LOG.warn(exception);
+    LOG.warn(INVALID_INVITATION, exception);
     return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_INVITATION);
   }
 
@@ -53,7 +52,7 @@ public class ErrorHandler {
   @ResponseBody
   public ErrorMessage handleInvalidOperationException(
       InvalidOperationException exception) {
-    LOG.warn(exception);
+    LOG.warn(INVALID_OPERATION, exception);
     return new ErrorMessage(HttpStatus.NOT_ACCEPTABLE, INVALID_OPERATION);
   }
 
@@ -62,7 +61,7 @@ public class ErrorHandler {
   @ResponseBody
   public ErrorMessage handleFileException(
       FileException exception) {
-    LOG.warn(exception);
+    LOG.warn(FILE_EXCEPTION, exception);
     return new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, FILE_EXCEPTION);
   }
 
@@ -71,7 +70,7 @@ public class ErrorHandler {
   @ResponseBody
   public ErrorMessage handleInvalidUserException(
       InvalidUserException exception) {
-    LOG.warn(exception);
+    LOG.warn(INVALID_USER, exception);
     return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_USER);
   }
 }
