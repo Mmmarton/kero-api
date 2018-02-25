@@ -1,9 +1,8 @@
 package com.komak.kero.keroapi.event;
 
 import com.komak.kero.keroapi.event.model.EventCreateModel;
-import com.komak.kero.keroapi.event.model.EventViewModel;
 import com.komak.kero.keroapi.event.model.EventUpdateModel;
-import java.util.ArrayList;
+import com.komak.kero.keroapi.event.model.EventViewModel;
 
 public class EventAdapter {
 
@@ -12,7 +11,6 @@ public class EventAdapter {
     event.setTitle(model.getTitle());
     event.setDate(model.getDate());
     event.setAuthorId(model.getAuthorId());
-    event.setImages(new ArrayList<>());
     return event;
   }
 

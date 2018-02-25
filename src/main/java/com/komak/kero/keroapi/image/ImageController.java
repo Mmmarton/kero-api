@@ -31,18 +31,13 @@ public class ImageController {
   @Autowired
   private AuthService authService;
 
-  @Autowired
-  private EventService eventService;
-
   @RequestMapping(value = "/{eventId}", method = RequestMethod.POST)
   public ResponseEntity<Object> create(@PathVariable String eventId,
       @RequestParam("image") MultipartFile imageFile) {
     UserSession session = authService.getSession();
     if (session.getRole() == Role.ROLE_ADMIN || session.getRole() == Role.ROLE_MEMBER) {
-      Event event = eventService.getEvent(eventId);
       ImageCreateModel model = new ImageCreateModel(eventId, imageFile, session.getId());
-      Image image = imageService.create(model);
-      eventService.addImage(event, image);
+      imageService.create(model);
       return new ResponseEntity("Done.", HttpStatus.OK);
     }
     else {
@@ -52,11 +47,7 @@ public class ImageController {
 
   @RequestMapping(value = "/{eventId}", method = RequestMethod.GET)
   public ResponseEntity<Object> getList(@PathVariable String eventId) {
-    Event event = eventService.getEvent(eventId);
-    if (event == null) {
-      throw new InvalidEventException();
-    }
-    List<ImageListModel> list = event.getImages().stream().map(ImageAdapter::toListModel)
+    List<ImageListModel> list = imageService.list(eventId).stream().map(ImageAdapter::toListModel)
         .collect(Collectors.toList());
     return new ResponseEntity(list, HttpStatus.OK);
   }
@@ -71,8 +62,7 @@ public class ImageController {
   public ResponseEntity<Object> delete(@PathVariable String eventId, @PathVariable String imageId) {
     UserSession session = authService.getSession();
     ImageDeleteModel imageDeleteModel = new ImageDeleteModel(imageId, session);
-    Image image = imageService.delete(imageDeleteModel);
-    eventService.removeImage(eventId, image);
+    imageService.delete(imageDeleteModel);
     return new ResponseEntity("Done.", HttpStatus.OK);
   }
 

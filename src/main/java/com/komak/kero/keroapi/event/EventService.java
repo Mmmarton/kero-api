@@ -3,8 +3,7 @@ package com.komak.kero.keroapi.event;
 import com.komak.kero.keroapi.error.InvalidEventException;
 import com.komak.kero.keroapi.error.UnauthorisedException;
 import com.komak.kero.keroapi.event.model.EventDeleteModel;
-import com.komak.kero.keroapi.image.Image;
-import java.util.ArrayList;
+import com.komak.kero.keroapi.image.ImageFileService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,9 +14,13 @@ public class EventService {
   @Autowired
   private EventRepository eventRepository;
 
-  public void create(Event event) {
-    System.out.println(event.getDate());
-    eventRepository.save(event);
+  @Autowired
+  private ImageFileService imageFileService;
+
+  public String create(Event event) {
+    String eventId = eventRepository.save(event).getId();
+    imageFileService.createDirectory(eventId);
+    return eventId;
   }
 
   public List<Event> list() {
@@ -56,23 +59,6 @@ public class EventService {
       throw new InvalidEventException();
     }
     return event;
-  }
-
-  public void addImage(Event event, Image image) {
-    if (event.getImages() == null) {
-      event.setImages(new ArrayList<>());
-    }
-    event.getImages().add(image);
-    eventRepository.save(event);
-  }
-
-  public void removeImage(String eventId, Image image) {
-    Event event = eventRepository.findOne(eventId);
-    if (event == null) {
-      throw new InvalidEventException();
-    }
-    event.getImages().remove(image);
-    eventRepository.save(event);
   }
 
   private Event update(Event oldEvent, Event newEvent) {

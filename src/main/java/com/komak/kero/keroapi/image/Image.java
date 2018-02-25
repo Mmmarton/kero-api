@@ -10,6 +10,7 @@ public class Image {
   private String id;
   private String authorId;
   private String imagePath;
+  private String eventId;
 
   public String getId() {
     return id;
@@ -33,5 +34,13 @@ public class Image {
 
   public void setImagePath(String imagePath) {
     this.imagePath = imagePath;
+  }
+
+  public String getEventId() {
+    return eventId;
+  }
+
+  public void setEventId(String eventId) {
+    this.eventId = eventId;
   }
 }

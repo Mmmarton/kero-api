@@ -29,10 +29,6 @@ public class ImageFileService {
     String filename =
         imageCreateModel.getEventId() + "/" + RandomStringUtils.randomAlphanumeric(30) + ".jpg";
     try {
-      Path eventPath = Paths.get(imagesFolder + imageCreateModel.getEventId());
-      if (!Files.exists(eventPath)) {
-        Files.createDirectory(eventPath);
-      }
       Path file = Paths.get(imagesFolder + filename);
       Files.write(file, toJPG(imageCreateModel.getImageFile().getInputStream()));
     }
@@ -42,6 +38,19 @@ public class ImageFileService {
     }
 
     return filename;
+  }
+
+  public void createDirectory(String path) {
+    try {
+      Path eventPath = Paths.get(imagesFolder + path);
+      if (!Files.exists(eventPath)) {
+        Files.createDirectory(eventPath);
+      }
+    }
+    catch (Exception e) {
+      LOG.error("File operation error", e);
+      throw new FileException("Failed to create event directory.");
+    }
   }
 
   public void deleteImage(String imagePath) {

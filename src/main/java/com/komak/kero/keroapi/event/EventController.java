@@ -40,9 +40,8 @@ public class EventController {
     UserSession session = authService.getSession();
     if (session.getRole() == Role.ROLE_ADMIN || session.getRole() == Role.ROLE_MEMBER) {
       eventCreateModel.setAuthorId(session.getId());
-      System.out.println(eventCreateModel.getDate());
-      eventService.create(EventAdapter.toEvent(eventCreateModel));
-      return new ResponseEntity("Done.", HttpStatus.OK);
+      String eventId = eventService.create(EventAdapter.toEvent(eventCreateModel));
+      return new ResponseEntity(eventId, HttpStatus.OK);
     }
     else {
       return new ResponseEntity("Not authorised.", HttpStatus.UNAUTHORIZED);

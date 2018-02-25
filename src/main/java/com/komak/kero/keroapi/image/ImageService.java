@@ -3,6 +3,7 @@ package com.komak.kero.keroapi.image;
 import com.komak.kero.keroapi.error.UnauthorisedException;
 import com.komak.kero.keroapi.image.model.ImageCreateModel;
 import com.komak.kero.keroapi.image.model.ImageDeleteModel;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class ImageService {
     Image image = new Image();
     image.setImagePath(imagePath);
     image.setAuthorId(imageCreateModel.getAuthorId());
+    image.setEventId(imageCreateModel.getEventId());
     return imageRepository.save(image);
   }
 
@@ -37,5 +39,9 @@ public class ImageService {
 
   public byte[] getImageFile(String path) {
     return imageFileService.getImage(path);
+  }
+
+  public List<Image> list(String eventId) {
+    return imageRepository.findAllByEventId(eventId);
   }
 }
