@@ -28,3 +28,4 @@ out/
 application.properties
 profile_pictures/
 images/
+src/main/resources/static/
