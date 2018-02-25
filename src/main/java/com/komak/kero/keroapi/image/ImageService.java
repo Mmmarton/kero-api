@@ -23,7 +23,7 @@ public class ImageService {
     return imageRepository.save(image);
   }
 
-  public void delete(ImageDeleteModel imageDelete) {
+  public Image delete(ImageDeleteModel imageDelete) {
     Image image = imageRepository.findOne(imageDelete.getImageId());
     if (image.getAuthorId().equals(imageDelete.getIssuerId()) || imageDelete.isAdmin()) {
       imageRepository.delete(imageDelete.getImageId());
@@ -32,6 +32,7 @@ public class ImageService {
     else {
       throw new UnauthorisedException("Can't delete other user's image.");
     }
+    return image;
   }
 
   public byte[] getImageFile(String path) {

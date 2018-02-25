@@ -67,11 +67,12 @@ public class ImageController {
     return new ResponseEntity(imageService.getImageFile(path), HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/{imageId}", method = RequestMethod.DELETE)
-  public ResponseEntity<Object> delete(@PathVariable String imageId) {
+  @RequestMapping(value = "/{eventId}/{imageId}", method = RequestMethod.DELETE)
+  public ResponseEntity<Object> delete(@PathVariable String eventId, @PathVariable String imageId) {
     UserSession session = authService.getSession();
     ImageDeleteModel imageDeleteModel = new ImageDeleteModel(imageId, session);
-    imageService.delete(imageDeleteModel);
+    Image image = imageService.delete(imageDeleteModel);
+    eventService.removeImage(eventId, image);
     return new ResponseEntity("Done.", HttpStatus.OK);
   }
 

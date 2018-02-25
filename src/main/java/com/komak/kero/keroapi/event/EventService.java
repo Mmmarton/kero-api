@@ -66,6 +66,15 @@ public class EventService {
     eventRepository.save(event);
   }
 
+  public void removeImage(String eventId, Image image) {
+    Event event = eventRepository.findOne(eventId);
+    if (event == null) {
+      throw new InvalidEventException();
+    }
+    event.getImages().remove(image);
+    eventRepository.save(event);
+  }
+
   private Event update(Event oldEvent, Event newEvent) {
     oldEvent.setTitle(newEvent.getTitle());
     oldEvent.setDate(newEvent.getDate());
