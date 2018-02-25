@@ -9,7 +9,7 @@ public class EventCreateModel {
   @NotEmpty(message = FieldErrorMessage.EMPTY)
   @Length(min = 3, max = 50, message = FieldErrorMessage.INVALID_LENGTH)
   private String title;
-  private long date;
+  private Long date;
   private String authorId;
 
   public String getTitle() {
@@ -20,11 +20,11 @@ public class EventCreateModel {
     this.title = title;
   }
 
-  public long getDate() {
+  public Long getDate() {
     return date;
   }
 
-  public void setDate(long date) {
+  public void setDate(Long date) {
     this.date = date;
   }
 

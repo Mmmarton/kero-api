@@ -14,7 +14,7 @@ public class Event {
   private String id;
   @Indexed(unique = true)
   private String title;
-  private long date;
+  private Long date;
   private String description;
   private String authorId;
   @DBRef(lazy = true)
@@ -36,11 +36,11 @@ public class Event {
     this.title = title;
   }
 
-  public long getDate() {
+  public Long getDate() {
     return date;
   }
 
-  public void setDate(long date) {
+  public void setDate(Long date) {
     this.date = date;
   }
 

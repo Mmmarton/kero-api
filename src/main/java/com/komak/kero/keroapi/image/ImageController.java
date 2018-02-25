@@ -3,6 +3,7 @@ package com.komak.kero.keroapi.image;
 import com.komak.kero.keroapi.auth.AuthService;
 import com.komak.kero.keroapi.auth.Role;
 import com.komak.kero.keroapi.auth.UserSession;
+import com.komak.kero.keroapi.error.InvalidEventException;
 import com.komak.kero.keroapi.event.Event;
 import com.komak.kero.keroapi.event.EventService;
 import com.komak.kero.keroapi.image.model.ImageCreateModel;
@@ -15,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,13 +53,17 @@ public class ImageController {
   @RequestMapping(value = "/{eventId}", method = RequestMethod.GET)
   public ResponseEntity<Object> getList(@PathVariable String eventId) {
     Event event = eventService.getEvent(eventId);
+    if (event == null) {
+      throw new InvalidEventException();
+    }
     List<ImageListModel> list = event.getImages().stream().map(ImageAdapter::toListModel)
         .collect(Collectors.toList());
     return new ResponseEntity(list, HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/load", method = RequestMethod.POST)
-  ResponseEntity<Object> getPicture(@RequestBody String path) {
+  @RequestMapping(value = "/{eventId}/{imageName:.+}", method = RequestMethod.GET)
+  ResponseEntity<Object> getPicture(@PathVariable String eventId, @PathVariable String imageName) {
+    String path = eventId + "/" + imageName;
     return new ResponseEntity(imageService.getImageFile(path), HttpStatus.OK);
   }
 

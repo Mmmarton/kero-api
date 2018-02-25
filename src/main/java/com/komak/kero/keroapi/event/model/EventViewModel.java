@@ -1,6 +1,6 @@
 package com.komak.kero.keroapi.event.model;
 
-public class EventListModel {
+public class EventViewModel {
 
   private String id;
   private String title;

@@ -5,8 +5,8 @@ import com.komak.kero.keroapi.auth.Role;
 import com.komak.kero.keroapi.auth.UserSession;
 import com.komak.kero.keroapi.event.model.EventCreateModel;
 import com.komak.kero.keroapi.event.model.EventDeleteModel;
-import com.komak.kero.keroapi.event.model.EventListModel;
 import com.komak.kero.keroapi.event.model.EventUpdateModel;
+import com.komak.kero.keroapi.event.model.EventViewModel;
 import com.komak.kero.keroapi.validation.EventUpdateModelValidator;
 import com.komak.kero.keroapi.validation.FieldErrorMessage;
 import java.util.List;
@@ -40,6 +40,7 @@ public class EventController {
     UserSession session = authService.getSession();
     if (session.getRole() == Role.ROLE_ADMIN || session.getRole() == Role.ROLE_MEMBER) {
       eventCreateModel.setAuthorId(session.getId());
+      System.out.println(eventCreateModel.getDate());
       eventService.create(EventAdapter.toEvent(eventCreateModel));
       return new ResponseEntity("Done.", HttpStatus.OK);
     }
@@ -70,9 +71,15 @@ public class EventController {
 
   @RequestMapping(value = "/", method = RequestMethod.GET)
   public ResponseEntity<Object> getList() {
-    List<EventListModel> list = eventService.list().stream().map(EventAdapter::toListModel)
+    List<EventViewModel> list = eventService.list().stream().map(EventAdapter::toListModel)
         .collect(Collectors.toList());
     return new ResponseEntity(list, HttpStatus.OK);
+  }
+
+  @RequestMapping(value = "/{eventId}", method = RequestMethod.GET)
+  public ResponseEntity<Object> get(@PathVariable String eventId) {
+    EventViewModel model = EventAdapter.toListModel(eventService.getEvent(eventId));
+    return new ResponseEntity(model, HttpStatus.OK);
   }
 
   @RequestMapping(value = "/{eventId}", method = RequestMethod.DELETE)

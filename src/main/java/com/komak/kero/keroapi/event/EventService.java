@@ -16,6 +16,7 @@ public class EventService {
   private EventRepository eventRepository;
 
   public void create(Event event) {
+    System.out.println(event.getDate());
     eventRepository.save(event);
   }
 
@@ -24,7 +25,11 @@ public class EventService {
   }
 
   public void delete(EventDeleteModel eventDelete) {
-    String authorId = eventRepository.findOne(eventDelete.getEventId()).getAuthorId();
+    Event event = eventRepository.findOne(eventDelete.getEventId());
+    if (event == null) {
+      throw new InvalidEventException();
+    }
+    String authorId = event.getAuthorId();
     if (authorId.equals(eventDelete.getIssuerId()) || eventDelete.isAdmin()) {
       eventRepository.delete(eventDelete.getEventId());
     }
