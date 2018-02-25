@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImageFileService {
 
   private static final Logger LOG = Logger.getLogger(ImageFileService.class);
+  private static final int PROFILE_SIZE = 500;
   private static final int PREVIEW_SIZE = 500;
 
   @Value("${images.folder}")
@@ -51,7 +52,7 @@ public class ImageFileService {
   }
 
   public byte[] getPicture(String picturePath) {
-    return getFile(profilePicturesFolder, picturePath);
+    return getFile(profilePicturesFolder, picturePath, false);
   }
 
   public String saveImage(ImageCreateModel imageCreateModel) {
@@ -75,7 +76,11 @@ public class ImageFileService {
   }
 
   public byte[] getImage(String imagePath) {
-    return getFile(imagesFolder, imagePath);
+    return getFile(imagesFolder, imagePath, true);
+  }
+
+  public byte[] getFullImage(String imagePath) {
+    return getFile(imagesFolder, imagePath, false);
   }
 
   public void createDirectory(String path) {
@@ -123,12 +128,22 @@ public class ImageFileService {
     }
   }
 
-  private byte[] getFile(String folder, String filePath) {
+  private byte[] getFile(String folder, String filePath, boolean scaledown) {
     ByteArrayOutputStream output = new ByteArrayOutputStream();
     try {
-      byte[] bytes = Files.readAllBytes(Paths.get(folder + filePath));
+      byte[] bytes;
+      if (scaledown) {
+        BufferedImage bufferedImage = ImageIO
+            .read(Files.newInputStream(Paths.get(folder + filePath)));
+        bufferedImage = scale(bufferedImage, PROFILE_SIZE);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "jpg", outputStream);
+        bytes = outputStream.toByteArray();
+      }
+      else {
+        bytes = Files.readAllBytes(Paths.get(folder + filePath));
+      }
       bytes = Base64.encodeBase64(bytes);
-
       output.write(("data:image/jpg;base64,").getBytes());
       output.write(bytes);
     }
@@ -147,7 +162,7 @@ public class ImageFileService {
     try {
       bufferedImage = ImageIO.read(inputStream);
       if (scaleDown) {
-        bufferedImage = scaleDown(bufferedImage);
+        bufferedImage = scale(bufferedImage, PROFILE_SIZE);
       }
       ImageIO.write(bufferedImage, "jpg", outputStream);
     }
@@ -158,10 +173,10 @@ public class ImageFileService {
     return outputStream.toByteArray();
   }
 
-  private BufferedImage scaleDown(BufferedImage bufferedImage) {
+  private BufferedImage scale(BufferedImage bufferedImage, double size) {
     double boundary = Math.max(bufferedImage.getHeight(), bufferedImage.getWidth());
-    if (boundary > PREVIEW_SIZE) {
-      double scale = PREVIEW_SIZE / boundary;
+    if (boundary > size) {
+      double scale = size / boundary;
       AffineTransform tx = new AffineTransform();
       tx.scale(scale, scale);
       AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
