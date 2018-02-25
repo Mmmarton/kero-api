@@ -2,7 +2,8 @@ package com.komak.kero.keroapi.image;
 
 import com.komak.kero.keroapi.error.FileException;
 import com.komak.kero.keroapi.image.model.ImageCreateModel;
-import java.awt.Color;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,28 +17,65 @@ import org.apache.log4j.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ImageFileService {
 
   private static final Logger LOG = Logger.getLogger(ImageFileService.class);
+  private static final int PREVIEW_SIZE = 500;
 
   @Value("${images.folder}")
   private String imagesFolder;
 
+  @Value("${profile.pictures.folder}")
+  private String profilePicturesFolder;
+
+  public String savePicture(MultipartFile picture) {
+    String filename = RandomStringUtils.randomAlphanumeric(30) + ".jpg";
+
+    InputStream inputStream;
+    try {
+      inputStream = picture.getInputStream();
+    }
+    catch (IOException e) {
+      LOG.error("File operation error", e);
+      throw new FileException("Invalid picture.");
+    }
+    createScaledFile(profilePicturesFolder, filename, inputStream);
+    return filename;
+  }
+
+  public void deletePicture(String picturePath) {
+    deleteFile(profilePicturesFolder, picturePath);
+  }
+
+  public byte[] getPicture(String picturePath) {
+    return getFile(profilePicturesFolder, picturePath);
+  }
+
   public String saveImage(ImageCreateModel imageCreateModel) {
     String filename =
         imageCreateModel.getEventId() + "/" + RandomStringUtils.randomAlphanumeric(30) + ".jpg";
-    try {
-      Path file = Paths.get(imagesFolder + filename);
-      Files.write(file, toJPG(imageCreateModel.getImageFile().getInputStream()));
-    }
-    catch (Exception e) {
-      LOG.error("File operation error", e);
-      throw new FileException("Failed to save image.");
-    }
 
+    InputStream inputStream;
+    try {
+      inputStream = imageCreateModel.getImageFile().getInputStream();
+    }
+    catch (IOException e) {
+      LOG.error("File operation error", e);
+      throw new FileException("Invalid image.");
+    }
+    createFile(imagesFolder, filename, inputStream);
     return filename;
+  }
+
+  public void deleteImage(String imagePath) {
+    deleteFile(imagesFolder, imagePath);
+  }
+
+  public byte[] getImage(String imagePath) {
+    return getFile(imagesFolder, imagePath);
   }
 
   public void createDirectory(String path) {
@@ -53,9 +91,31 @@ public class ImageFileService {
     }
   }
 
-  public void deleteImage(String imagePath) {
+  private void createFile(String folder, String filePath, InputStream stream) {
     try {
-      Files.delete(Paths.get(imagesFolder + imagePath));
+      Path file = Paths.get(folder + filePath);
+      Files.write(file, toJPG(stream, false));
+    }
+    catch (Exception e) {
+      LOG.error("File operation error", e);
+      throw new FileException("Failed to save image.");
+    }
+  }
+
+  private void createScaledFile(String folder, String filePath, InputStream stream) {
+    try {
+      Path file = Paths.get(folder + filePath);
+      Files.write(file, toJPG(stream, true));
+    }
+    catch (Exception e) {
+      LOG.error("File operation error", e);
+      throw new FileException("Failed to save image.");
+    }
+  }
+
+  private void deleteFile(String folder, String filePath) {
+    try {
+      Files.delete(Paths.get(folder + filePath));
     }
     catch (IOException e) {
       LOG.error("File operation error", e);
@@ -63,10 +123,10 @@ public class ImageFileService {
     }
   }
 
-  public byte[] getImage(String imagePath) {
+  private byte[] getFile(String folder, String filePath) {
     ByteArrayOutputStream output = new ByteArrayOutputStream();
     try {
-      byte[] bytes = Files.readAllBytes(Paths.get(imagesFolder + imagePath));
+      byte[] bytes = Files.readAllBytes(Paths.get(folder + filePath));
       bytes = Base64.encodeBase64(bytes);
 
       output.write(("data:image/jpg;base64,").getBytes());
@@ -80,21 +140,35 @@ public class ImageFileService {
     return output.toByteArray();
   }
 
-  private byte[] toJPG(InputStream inputStream) {
+  private byte[] toJPG(InputStream inputStream, boolean scaleDown) {
     BufferedImage bufferedImage;
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
     try {
       bufferedImage = ImageIO.read(inputStream);
-      BufferedImage newBufferedImage = new BufferedImage(bufferedImage.getWidth(),
-          bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-      newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, Color.WHITE, null);
-      ImageIO.write(newBufferedImage, "jpg", outputStream);
+      if (scaleDown) {
+        bufferedImage = scaleDown(bufferedImage);
+      }
+      ImageIO.write(bufferedImage, "jpg", outputStream);
     }
     catch (IOException e) {
       LOG.error("File operation error", e);
       throw new FileException("Failed to convert profile picture.");
     }
     return outputStream.toByteArray();
+  }
+
+  private BufferedImage scaleDown(BufferedImage bufferedImage) {
+    double boundary = Math.max(bufferedImage.getHeight(), bufferedImage.getWidth());
+    if (boundary > PREVIEW_SIZE) {
+      double scale = PREVIEW_SIZE / boundary;
+      AffineTransform tx = new AffineTransform();
+      tx.scale(scale, scale);
+      AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+      BufferedImage last = new BufferedImage((int) (bufferedImage.getWidth() * scale),
+          (int) (bufferedImage.getHeight() * scale), bufferedImage.getType());
+      return op.filter(bufferedImage, last);
+    }
+    return bufferedImage;
   }
 }

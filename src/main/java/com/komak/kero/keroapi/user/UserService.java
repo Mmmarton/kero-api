@@ -6,6 +6,7 @@ import com.komak.kero.keroapi.error.InvalidInvitationException;
 import com.komak.kero.keroapi.error.UnauthorisedException;
 import com.komak.kero.keroapi.error.InvalidUserException;
 import com.komak.kero.keroapi.error.NoInvitationException;
+import com.komak.kero.keroapi.image.ImageFileService;
 import com.komak.kero.keroapi.user.model.UserRoleModel;
 import com.komak.kero.keroapi.user.model.UserUpdateModel;
 import java.util.List;
@@ -33,7 +34,7 @@ public class UserService {
   private InvitationMailService mailService;
 
   @Autowired
-  private ProfilePictureService profilePictureService;
+  private ImageFileService imageFileService;
 
   @Value("auth.user.salt")
   private String userSalt;
@@ -137,9 +138,9 @@ public class UserService {
   public void updatePicture(MultipartFile picture, String email) {
     User user = userRepository.findByEmail(email);
     if (user.getPicture() != null) {
-      profilePictureService.deletePicture(user.getPicture());
+      imageFileService.deletePicture(user.getPicture());
     }
-    user.setPicture(profilePictureService.savePicture(picture));
+    user.setPicture(imageFileService.savePicture(picture));
     userRepository.save(user);
   }
 
@@ -150,7 +151,7 @@ public class UserService {
       throw new InvalidUserException();
     }
     if (user.getPicture() != null) {
-      picture = profilePictureService.getPicture(user.getPicture());
+      picture = imageFileService.getPicture(user.getPicture());
     }
     return picture;
   }
