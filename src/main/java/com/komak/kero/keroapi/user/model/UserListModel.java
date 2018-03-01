@@ -7,6 +7,7 @@ public class UserListModel {
   private String nickname;
   private String email;
   private Role role;
+  private boolean hasPicture;
 
   public String getNickname() {
     return nickname;
@@ -30,5 +31,13 @@ public class UserListModel {
 
   public void setRole(Role role) {
     this.role = role;
+  }
+
+  public boolean getHasPicture() {
+    return hasPicture;
+  }
+
+  public void setHasPicture(boolean hasPicture) {
+    this.hasPicture = hasPicture;
   }
 }

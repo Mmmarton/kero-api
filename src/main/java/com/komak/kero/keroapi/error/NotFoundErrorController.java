@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 20.2.2015
  */
 @RestController
-public class CustomErrorController implements ErrorController {
+public class NotFoundErrorController implements ErrorController {
 
   private static final String PATH = "/error";
 

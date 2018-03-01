@@ -19,13 +19,6 @@ public class UserAdapter {
     return model;
   }
 
-  public static UserViewModel toViewModel(UserCreateModel user) {
-    UserViewModel model = new UserViewModel();
-    model.setNickname(user.getNickname());
-    model.setEmail(user.getEmail());
-    return model;
-  }
-
   public static UserSession toSession(User user) {
     UserSession session = new UserSession();
     session.setId(user.getId());
@@ -55,6 +48,7 @@ public class UserAdapter {
     model.setEmail(user.getEmail());
     model.setNickname(user.getNickname());
     model.setRole(user.getRole());
+    model.setHasPicture(user.getPicture() != null);
     return model;
   }
 }

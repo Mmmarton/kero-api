@@ -52,7 +52,7 @@ public class ImageController {
     return new ResponseEntity(list, HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/{eventId}/{imageName:.+}", method = RequestMethod.GET)
+  @RequestMapping(value = "/preview/{eventId}/{imageName:.+}", method = RequestMethod.GET)
   ResponseEntity<Object> getPicture(@PathVariable String eventId, @PathVariable String imageName) {
     String path = eventId + "/" + imageName;
     return new ResponseEntity(imageService.getImageFile(path), HttpStatus.OK);

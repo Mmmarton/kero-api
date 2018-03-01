@@ -14,7 +14,6 @@ import java.nio.file.Paths;
 import javax.imageio.ImageIO;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.log4j.Logger;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -129,9 +128,8 @@ public class ImageFileService {
   }
 
   private byte[] getFile(String folder, String filePath, boolean scaledown) {
-    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    byte[] bytes;
     try {
-      byte[] bytes;
       if (scaledown) {
         BufferedImage bufferedImage = ImageIO
             .read(Files.newInputStream(Paths.get(folder + filePath)));
@@ -143,16 +141,13 @@ public class ImageFileService {
       else {
         bytes = Files.readAllBytes(Paths.get(folder + filePath));
       }
-      bytes = Base64.encodeBase64(bytes);
-      output.write(("data:image/jpg;base64,").getBytes());
-      output.write(bytes);
     }
     catch (IOException e) {
       LOG.error("File operation error", e);
       throw new FileException("Failed to read image.");
 
     }
-    return output.toByteArray();
+    return bytes;
   }
 
   private byte[] toJPG(InputStream inputStream, boolean scaleDown) {
