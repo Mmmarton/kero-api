@@ -37,8 +37,12 @@ public class ImageService {
     return image;
   }
 
-  public byte[] getImageFile(String path) {
-    return imageFileService.getImage(path);
+  public byte[] getImagePreview(String path) {
+    return imageFileService.getImagePreview(path);
+  }
+
+  public byte[] getFullImage(String path) {
+    return imageFileService.getFullImage(path);
   }
 
   public List<Image> list(String eventId) {

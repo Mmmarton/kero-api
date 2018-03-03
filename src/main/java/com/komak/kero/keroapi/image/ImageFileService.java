@@ -74,7 +74,7 @@ public class ImageFileService {
     deleteFile(imagesFolder, imagePath);
   }
 
-  public byte[] getImage(String imagePath) {
+  public byte[] getImagePreview(String imagePath) {
     return getFile(imagesFolder, imagePath, true);
   }
 

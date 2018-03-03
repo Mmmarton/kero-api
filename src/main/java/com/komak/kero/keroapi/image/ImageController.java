@@ -3,9 +3,6 @@ package com.komak.kero.keroapi.image;
 import com.komak.kero.keroapi.auth.AuthService;
 import com.komak.kero.keroapi.auth.Role;
 import com.komak.kero.keroapi.auth.UserSession;
-import com.komak.kero.keroapi.error.InvalidEventException;
-import com.komak.kero.keroapi.event.Event;
-import com.komak.kero.keroapi.event.EventService;
 import com.komak.kero.keroapi.image.model.ImageCreateModel;
 import com.komak.kero.keroapi.image.model.ImageDeleteModel;
 import com.komak.kero.keroapi.image.model.ImageListModel;
@@ -52,10 +49,18 @@ public class ImageController {
     return new ResponseEntity(list, HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/preview/{eventId}/{imageName:.+}", method = RequestMethod.GET)
-  ResponseEntity<Object> getPicture(@PathVariable String eventId, @PathVariable String imageName) {
+  @RequestMapping(value = "/{eventId}/{imageName:.+}", method = RequestMethod.GET)
+  ResponseEntity<Object> getFullImage(@PathVariable String eventId,
+      @PathVariable String imageName) {
     String path = eventId + "/" + imageName;
-    return new ResponseEntity(imageService.getImageFile(path), HttpStatus.OK);
+    return new ResponseEntity(imageService.getFullImage(path), HttpStatus.OK);
+  }
+
+  @RequestMapping(value = "/preview/{eventId}/{imageName:.+}", method = RequestMethod.GET)
+  ResponseEntity<Object> getImagePreview(@PathVariable String eventId,
+      @PathVariable String imageName) {
+    String path = eventId + "/" + imageName;
+    return new ResponseEntity(imageService.getImagePreview(path), HttpStatus.OK);
   }
 
   @RequestMapping(value = "/{eventId}/{imageId}", method = RequestMethod.DELETE)
