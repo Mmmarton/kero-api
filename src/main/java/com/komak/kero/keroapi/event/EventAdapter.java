@@ -3,8 +3,6 @@ package com.komak.kero.keroapi.event;
 import com.komak.kero.keroapi.event.model.EventCreateModel;
 import com.komak.kero.keroapi.event.model.EventUpdateModel;
 import com.komak.kero.keroapi.event.model.EventViewModel;
-import com.komak.kero.keroapi.image.Image;
-import java.util.List;
 import java.util.Set;
 
 public class EventAdapter {

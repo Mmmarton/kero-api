@@ -4,7 +4,6 @@ import com.komak.kero.keroapi.FileService;
 import com.komak.kero.keroapi.error.UnauthorisedException;
 import com.komak.kero.keroapi.image.model.ImageCreateModel;
 import com.komak.kero.keroapi.image.model.ImageDeleteModel;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
