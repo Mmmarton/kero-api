@@ -35,15 +35,24 @@ public class FileService {
   public String savePicture(MultipartFile picture) {
     String filename = RandomStringUtils.randomAlphanumeric(30) + ".jpg";
 
-    InputStream inputStream;
+    InputStream inputStream = null;
     try {
       inputStream = picture.getInputStream();
       createScaledFile(profilePicturesFolder, filename, inputStream);
-      inputStream.close();
     }
     catch (IOException e) {
       LOG.error("File operation error", e);
       throw new FileException("Invalid picture.");
+    }
+    finally {
+      try {
+        if (inputStream != null) {
+          inputStream.close();
+        }
+      }
+      catch (Exception e) {
+        LOG.error("File operation error", e);
+      }
     }
     return filename;
   }
@@ -60,15 +69,24 @@ public class FileService {
     String filename =
         imageCreateModel.getEventId() + "/" + RandomStringUtils.randomAlphanumeric(30) + ".jpg";
 
-    InputStream inputStream;
+    InputStream inputStream = null;
     try {
       inputStream = imageCreateModel.getImageFile().getInputStream();
       createFile(imagesFolder, filename, inputStream);
-      inputStream.close();
     }
     catch (IOException e) {
       LOG.error("File operation error", e);
       throw new FileException("Invalid image.");
+    }
+    finally {
+      try {
+        if (inputStream != null) {
+          inputStream.close();
+        }
+      }
+      catch (Exception e) {
+        LOG.error("File operation error", e);
+      }
     }
     return filename;
   }
@@ -144,16 +162,16 @@ public class FileService {
 
   private byte[] getFile(String folder, String filePath, boolean scaledown) {
     byte[] bytes;
+    InputStream inputStream = null;
+    ByteArrayOutputStream outputStream = null;
     try {
       if (scaledown) {
-        InputStream inputStream = Files.newInputStream(Paths.get(folder + filePath));
+        inputStream = Files.newInputStream(Paths.get(folder + filePath));
         BufferedImage bufferedImage = ImageIO.read(inputStream);
         bufferedImage = scale(bufferedImage, PREVIEW_SIZE);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        outputStream = new ByteArrayOutputStream();
         ImageIO.write(bufferedImage, "jpg", outputStream);
         bytes = outputStream.toByteArray();
-        outputStream.close();
-        inputStream.close();
       }
       else {
         bytes = Files.readAllBytes(Paths.get(folder + filePath));
@@ -163,6 +181,24 @@ public class FileService {
       LOG.error("File operation error", e);
       throw new FileException("Failed to read image.");
 
+    }
+    finally {
+      try {
+        if (outputStream != null) {
+          outputStream.close();
+        }
+      }
+      catch (Exception e) {
+        LOG.error("File operation error", e);
+      }
+      try {
+        if (inputStream != null) {
+          inputStream.close();
+        }
+      }
+      catch (Exception e) {
+        LOG.error("File operation error", e);
+      }
     }
     return bytes;
   }
@@ -179,11 +215,18 @@ public class FileService {
       }
       ImageIO.write(bufferedImage, "jpg", outputStream);
       bytes = outputStream.toByteArray();
-      outputStream.close();
     }
     catch (IOException e) {
       LOG.error("File operation error", e);
       throw new FileException("Failed to convert profile picture.");
+    }
+    finally {
+      try {
+        outputStream.close();
+      }
+      catch (Exception e) {
+        LOG.error("File operation error", e);
+      }
     }
     return bytes;
   }
@@ -195,8 +238,12 @@ public class FileService {
       AffineTransform tx = new AffineTransform();
       tx.scale(scale, scale);
       AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BICUBIC);
+      int imageType = bufferedImage.getType();
+      if (imageType == 0) {
+        imageType = BufferedImage.TYPE_4BYTE_ABGR;
+      }
       BufferedImage last = new BufferedImage((int) (bufferedImage.getWidth() * scale),
-          (int) (bufferedImage.getHeight() * scale), bufferedImage.getType());
+          (int) (bufferedImage.getHeight() * scale), imageType);
       return op.filter(bufferedImage, last);
     }
     return bufferedImage;

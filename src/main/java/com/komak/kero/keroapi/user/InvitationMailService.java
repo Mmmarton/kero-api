@@ -55,16 +55,32 @@ public class InvitationMailService {
 
   private String generateInvitation(String emailTo, String inviteCode) throws IOException {
     String invitationLink = link + emailTo + "/" + inviteCode;
-
-    Resource resource = new ClassPathResource("invitation.html");
-    InputStream resourceInputStream = resource.getInputStream();
-    Scanner scanner = new Scanner(resourceInputStream);
-    StringBuilder builder = new StringBuilder();
-    while (scanner.hasNextLine()) {
-      builder.append(scanner.nextLine());
+    String message;
+    InputStream resourceInputStream = null;
+    try {
+      Resource resource = new ClassPathResource("invitation.html");
+      resourceInputStream = resource.getInputStream();
+      Scanner scanner = new Scanner(resourceInputStream);
+      StringBuilder builder = new StringBuilder();
+      while (scanner.hasNextLine()) {
+        builder.append(scanner.nextLine());
+      }
+      message = builder.toString();
     }
-    String message = builder.toString();
-    resourceInputStream.close();
+    catch (IOException e) {
+      LOG.error("IO error.", e);
+      throw e;
+    }
+    finally {
+      try {
+        if (resourceInputStream != null) {
+          resourceInputStream.close();
+        }
+      }
+      catch (Exception e) {
+        LOG.error("File operation error", e);
+      }
+    }
 
     return message.replace("*", invitationLink);
   }
