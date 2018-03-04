@@ -7,6 +7,7 @@ import com.komak.kero.keroapi.event.model.EventCreateModel;
 import com.komak.kero.keroapi.event.model.EventDeleteModel;
 import com.komak.kero.keroapi.event.model.EventUpdateModel;
 import com.komak.kero.keroapi.event.model.EventViewModel;
+import com.komak.kero.keroapi.image.ImageService;
 import com.komak.kero.keroapi.validation.EventUpdateModelValidator;
 import com.komak.kero.keroapi.validation.FieldErrorMessage;
 import java.util.List;
@@ -28,6 +29,9 @@ public class EventController {
 
   @Autowired
   private EventService eventService;
+
+  @Autowired
+  private ImageService imageService;
 
   @Autowired
   private AuthService authService;
@@ -86,6 +90,7 @@ public class EventController {
     UserSession session = authService.getSession();
     EventDeleteModel eventDelete = new EventDeleteModel(eventId, session);
     eventService.delete(eventDelete);
+    imageService.deleteRelated(eventId);
     return new ResponseEntity("Done.", HttpStatus.OK);
   }
 

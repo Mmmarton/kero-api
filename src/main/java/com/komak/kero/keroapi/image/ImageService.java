@@ -1,5 +1,6 @@
 package com.komak.kero.keroapi.image;
 
+import com.komak.kero.keroapi.FileService;
 import com.komak.kero.keroapi.error.UnauthorisedException;
 import com.komak.kero.keroapi.image.model.ImageCreateModel;
 import com.komak.kero.keroapi.image.model.ImageDeleteModel;
@@ -14,10 +15,10 @@ public class ImageService {
   private ImageRepository imageRepository;
 
   @Autowired
-  ImageFileService imageFileService;
+  FileService fileService;
 
   public Image create(ImageCreateModel imageCreateModel) {
-    String imagePath = imageFileService.saveImage(imageCreateModel);
+    String imagePath = fileService.saveImage(imageCreateModel);
     Image image = new Image();
     image.setImagePath(imagePath);
     image.setAuthorId(imageCreateModel.getAuthorId());
@@ -29,7 +30,7 @@ public class ImageService {
     Image image = imageRepository.findOne(imageDelete.getImageId());
     if (image.getAuthorId().equals(imageDelete.getIssuerId()) || imageDelete.isAdmin()) {
       imageRepository.delete(imageDelete.getImageId());
-      imageFileService.deleteImage(image.getImagePath());
+      fileService.deleteImage(image.getImagePath());
     }
     else {
       throw new UnauthorisedException("Can't delete other user's image.");
@@ -38,14 +39,18 @@ public class ImageService {
   }
 
   public byte[] getImagePreview(String path) {
-    return imageFileService.getImagePreview(path);
+    return fileService.getImagePreview(path);
   }
 
   public byte[] getFullImage(String path) {
-    return imageFileService.getFullImage(path);
+    return fileService.getFullImage(path);
   }
 
   public List<Image> list(String eventId) {
     return imageRepository.findAllByEventId(eventId);
+  }
+
+  public void deleteRelated(String eventId) {
+    imageRepository.findAllByEventId(eventId).forEach(i -> imageRepository.delete(i.getId()));
   }
 }

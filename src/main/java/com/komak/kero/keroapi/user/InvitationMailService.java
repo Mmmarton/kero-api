@@ -64,6 +64,7 @@ public class InvitationMailService {
       builder.append(scanner.nextLine());
     }
     String message = builder.toString();
+    resourceInputStream.close();
 
     return message.replace("*", invitationLink);
   }

@@ -1,4 +1,4 @@
-package com.komak.kero.keroapi.image;
+package com.komak.kero.keroapi;
 
 import com.komak.kero.keroapi.error.FileException;
 import com.komak.kero.keroapi.image.model.ImageCreateModel;
@@ -14,16 +14,17 @@ import java.nio.file.Paths;
 import javax.imageio.ImageIO;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.log4j.Logger;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public class ImageFileService {
+public class FileService {
 
-  private static final Logger LOG = Logger.getLogger(ImageFileService.class);
-  private static final int PROFILE_SIZE = 500;
-  private static final int PREVIEW_SIZE = 500;
+  private static final Logger LOG = Logger.getLogger(FileService.class);
+  private static final int PROFILE_SIZE = 400;
+  private static final int PREVIEW_SIZE = 400;
 
   @Value("${images.folder}")
   private String imagesFolder;
@@ -37,12 +38,13 @@ public class ImageFileService {
     InputStream inputStream;
     try {
       inputStream = picture.getInputStream();
+      createScaledFile(profilePicturesFolder, filename, inputStream);
+      inputStream.close();
     }
     catch (IOException e) {
       LOG.error("File operation error", e);
       throw new FileException("Invalid picture.");
     }
-    createScaledFile(profilePicturesFolder, filename, inputStream);
     return filename;
   }
 
@@ -61,12 +63,13 @@ public class ImageFileService {
     InputStream inputStream;
     try {
       inputStream = imageCreateModel.getImageFile().getInputStream();
+      createFile(imagesFolder, filename, inputStream);
+      inputStream.close();
     }
     catch (IOException e) {
       LOG.error("File operation error", e);
       throw new FileException("Invalid image.");
     }
-    createFile(imagesFolder, filename, inputStream);
     return filename;
   }
 
@@ -92,6 +95,18 @@ public class ImageFileService {
     catch (Exception e) {
       LOG.error("File operation error", e);
       throw new FileException("Failed to create event directory.");
+    }
+  }
+
+  public void deleteDirectory(String path) {
+    Path eventPath = Paths.get(imagesFolder + path);
+    try {
+      if (Files.exists(eventPath)) {
+        FileUtils.deleteDirectory(eventPath.toFile());
+      }
+    }
+    catch (IOException e) {
+      e.printStackTrace();
     }
   }
 
@@ -131,12 +146,14 @@ public class ImageFileService {
     byte[] bytes;
     try {
       if (scaledown) {
-        BufferedImage bufferedImage = ImageIO
-            .read(Files.newInputStream(Paths.get(folder + filePath)));
-        bufferedImage = scale(bufferedImage, PROFILE_SIZE);
+        InputStream inputStream = Files.newInputStream(Paths.get(folder + filePath));
+        BufferedImage bufferedImage = ImageIO.read(inputStream);
+        bufferedImage = scale(bufferedImage, PREVIEW_SIZE);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ImageIO.write(bufferedImage, "jpg", outputStream);
         bytes = outputStream.toByteArray();
+        outputStream.close();
+        inputStream.close();
       }
       else {
         bytes = Files.readAllBytes(Paths.get(folder + filePath));
@@ -153,6 +170,7 @@ public class ImageFileService {
   private byte[] toJPG(InputStream inputStream, boolean scaleDown) {
     BufferedImage bufferedImage;
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    byte[] bytes;
 
     try {
       bufferedImage = ImageIO.read(inputStream);
@@ -160,12 +178,14 @@ public class ImageFileService {
         bufferedImage = scale(bufferedImage, PROFILE_SIZE);
       }
       ImageIO.write(bufferedImage, "jpg", outputStream);
+      bytes = outputStream.toByteArray();
+      outputStream.close();
     }
     catch (IOException e) {
       LOG.error("File operation error", e);
       throw new FileException("Failed to convert profile picture.");
     }
-    return outputStream.toByteArray();
+    return bytes;
   }
 
   private BufferedImage scale(BufferedImage bufferedImage, double size) {
@@ -174,7 +194,7 @@ public class ImageFileService {
       double scale = size / boundary;
       AffineTransform tx = new AffineTransform();
       tx.scale(scale, scale);
-      AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+      AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BICUBIC);
       BufferedImage last = new BufferedImage((int) (bufferedImage.getWidth() * scale),
           (int) (bufferedImage.getHeight() * scale), bufferedImage.getType());
       return op.filter(bufferedImage, last);

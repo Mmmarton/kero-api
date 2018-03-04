@@ -12,12 +12,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class AdminSetupService {
 
-  private UserService userService;
-
   @Autowired
   public AdminSetupService(UserService userService)
       throws IOException {
-    this.userService = userService;
 
     if (userService.getUserCount() == 0) {
       Resource resource = new ClassPathResource("admins");
@@ -29,6 +26,7 @@ public class AdminSetupService {
         user.setRole(Role.ROLE_ADMIN);
         userService.invite(user);
       }
+      resourceInputStream.close();
     }
   }
 }

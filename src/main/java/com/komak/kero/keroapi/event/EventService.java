@@ -1,9 +1,9 @@
 package com.komak.kero.keroapi.event;
 
+import com.komak.kero.keroapi.FileService;
 import com.komak.kero.keroapi.error.InvalidEventException;
 import com.komak.kero.keroapi.error.UnauthorisedException;
 import com.komak.kero.keroapi.event.model.EventDeleteModel;
-import com.komak.kero.keroapi.image.ImageFileService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,11 +15,11 @@ public class EventService {
   private EventRepository eventRepository;
 
   @Autowired
-  private ImageFileService imageFileService;
+  private FileService fileService;
 
   public String create(Event event) {
     String eventId = eventRepository.save(event).getId();
-    imageFileService.createDirectory(eventId);
+    fileService.createDirectory(eventId);
     return eventId;
   }
 
@@ -39,6 +39,7 @@ public class EventService {
     else {
       throw new UnauthorisedException("Can't delete other user's event.");
     }
+    fileService.deleteDirectory(event.getId());
   }
 
   public void update(Event event) {
