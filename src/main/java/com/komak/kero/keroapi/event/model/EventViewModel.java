@@ -1,5 +1,7 @@
 package com.komak.kero.keroapi.event.model;
 
+import java.util.Set;
+
 public class EventViewModel {
 
   private String id;
@@ -7,6 +9,7 @@ public class EventViewModel {
   private long date;
   private String description;
   private String authorId;
+  private Set<String> previews;
 
   public String getId() {
     return id;
@@ -46,5 +49,13 @@ public class EventViewModel {
 
   public void setAuthorId(String authorId) {
     this.authorId = authorId;
+  }
+
+  public Set<String> getPreviews() {
+    return previews;
+  }
+
+  public void setPreviews(Set<String> previews) {
+    this.previews = previews;
   }
 }

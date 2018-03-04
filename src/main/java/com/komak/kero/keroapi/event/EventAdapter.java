@@ -3,6 +3,9 @@ package com.komak.kero.keroapi.event;
 import com.komak.kero.keroapi.event.model.EventCreateModel;
 import com.komak.kero.keroapi.event.model.EventUpdateModel;
 import com.komak.kero.keroapi.event.model.EventViewModel;
+import com.komak.kero.keroapi.image.Image;
+import java.util.List;
+import java.util.Set;
 
 public class EventAdapter {
 
@@ -30,6 +33,12 @@ public class EventAdapter {
     model.setTitle(event.getTitle());
     model.setDate(event.getDate());
     model.setDescription(event.getDescription());
+    return model;
+  }
+
+  public static EventViewModel toListModel(Event event, Set<String> previews) {
+    EventViewModel model = toListModel(event);
+    model.setPreviews(previews);
     return model;
   }
 

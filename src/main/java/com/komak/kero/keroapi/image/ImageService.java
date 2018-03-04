@@ -4,9 +4,11 @@ import com.komak.kero.keroapi.FileService;
 import com.komak.kero.keroapi.error.UnauthorisedException;
 import com.komak.kero.keroapi.image.model.ImageCreateModel;
 import com.komak.kero.keroapi.image.model.ImageDeleteModel;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,12 +60,12 @@ public class ImageService {
     imageRepository.findAllByEventId(eventId).forEach(i -> imageRepository.delete(i.getId()));
   }
 
-  public List<Image> randomList(String eventId) {
+  public Set<String> randomList(String eventId) {
     List<Image> list = imageRepository.findAllByEventId(eventId);
-    return Arrays.asList(
-        list.get(random.nextInt(list.size())),
-        list.get(random.nextInt(list.size())),
-        list.get(random.nextInt(list.size()))
-    );
+    Set<String> result = new HashSet<>();
+    for (int i = 0; i < Math.min(3, list.size()); i++) {
+      result.add(list.get(random.nextInt(list.size())).getImagePath());
+    }
+    return result;
   }
 }

@@ -74,7 +74,8 @@ public class EventController {
 
   @RequestMapping(value = "/", method = RequestMethod.GET)
   public ResponseEntity<Object> getList() {
-    List<EventViewModel> list = eventService.list().stream().map(EventAdapter::toListModel)
+    List<EventViewModel> list = eventService.list().stream()
+        .map(e -> EventAdapter.toListModel(e, imageService.randomList(e.getId())))
         .collect(Collectors.toList());
     return new ResponseEntity(list, HttpStatus.OK);
   }
