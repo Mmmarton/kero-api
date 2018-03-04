@@ -4,7 +4,9 @@ import com.komak.kero.keroapi.FileService;
 import com.komak.kero.keroapi.error.UnauthorisedException;
 import com.komak.kero.keroapi.image.model.ImageCreateModel;
 import com.komak.kero.keroapi.image.model.ImageDeleteModel;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ public class ImageService {
 
   @Autowired
   FileService fileService;
+
+  private Random random = new Random();
 
   public Image create(ImageCreateModel imageCreateModel) {
     String imagePath = fileService.saveImage(imageCreateModel);
@@ -52,5 +56,14 @@ public class ImageService {
 
   public void deleteRelated(String eventId) {
     imageRepository.findAllByEventId(eventId).forEach(i -> imageRepository.delete(i.getId()));
+  }
+
+  public List<Image> randomList(String eventId) {
+    List<Image> list = imageRepository.findAllByEventId(eventId);
+    return Arrays.asList(
+        list.get(random.nextInt(list.size())),
+        list.get(random.nextInt(list.size())),
+        list.get(random.nextInt(list.size()))
+    );
   }
 }

@@ -24,7 +24,7 @@ public class FileService {
 
   private static final Logger LOG = Logger.getLogger(FileService.class);
   private static final int PROFILE_SIZE = 400;
-  private static final int PREVIEW_SIZE = 400;
+  private static final int PREVIEW_SIZE = 200;
 
   @Value("${images.folder}")
   private String imagesFolder;
@@ -189,7 +189,7 @@ public class FileService {
   }
 
   private BufferedImage scale(BufferedImage bufferedImage, double size) {
-    double boundary = Math.max(bufferedImage.getHeight(), bufferedImage.getWidth());
+    double boundary = bufferedImage.getHeight();
     if (boundary > size) {
       double scale = size / boundary;
       AffineTransform tx = new AffineTransform();

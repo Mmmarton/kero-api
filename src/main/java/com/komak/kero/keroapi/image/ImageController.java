@@ -49,6 +49,14 @@ public class ImageController {
     return new ResponseEntity(list, HttpStatus.OK);
   }
 
+  @RequestMapping(value = "/random/{eventId}", method = RequestMethod.GET)
+  public ResponseEntity<Object> getRandomList(@PathVariable String eventId) {
+    List<ImageListModel> list = imageService.randomList(eventId).stream()
+        .map(ImageAdapter::toListModel)
+        .collect(Collectors.toList());
+    return new ResponseEntity(list, HttpStatus.OK);
+  }
+
   @RequestMapping(value = "/{eventId}/{imageName:.+}", method = RequestMethod.GET)
   ResponseEntity<Object> getFullImage(@PathVariable String eventId,
       @PathVariable String imageName) {
