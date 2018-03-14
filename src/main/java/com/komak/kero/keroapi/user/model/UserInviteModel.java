@@ -8,17 +8,17 @@ public class UserInviteModel {
 
   @NotEmpty(message = FieldErrorMessage.EMPTY)
   @Length(min = 3, max = 20, message = FieldErrorMessage.INVALID_LENGTH)
-  private String nickname;
+  private String firstName;
   @NotEmpty(message = FieldErrorMessage.EMPTY)
   @Length(min = 5, max = 50, message = FieldErrorMessage.INVALID_LENGTH)
   private String email;
 
-  public String getNickname() {
-    return nickname;
+  public String getFirstName() {
+    return firstName;
   }
 
-  public void setNickname(String nickname) {
-    this.nickname = nickname;
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
   }
 
   public String getEmail() {
@@ -32,7 +32,7 @@ public class UserInviteModel {
   @Override
   public String toString() {
     return "UserCreateModel{" +
-        ", nickname='" + nickname + '\'' +
+        ", firstName='" + firstName + '\'' +
         ", email='" + email + '\'' +
         '}';
   }

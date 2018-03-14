@@ -14,7 +14,7 @@ public class EventUpdateModelValidator implements Validator {
 
   public void validate(Object target, Errors errors) {
     EventUpdateModel event = (EventUpdateModel) target;
-    if (event.getDescription() != null) {
+    if (event.getDescription() != null && !event.getDescription().isEmpty()) {
       if (event.getDescription().length() < 10 || event.getDescription().length() > 1000) {
         errors.rejectValue("description", null, FieldErrorMessage.INVALID_LENGTH);
       }

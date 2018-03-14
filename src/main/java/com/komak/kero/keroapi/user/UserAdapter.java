@@ -38,7 +38,7 @@ public class UserAdapter {
 
   public static User toUser(UserInviteModel model) {
     User user = new User();
-    user.setNickname(model.getNickname());
+    user.setFirstName(model.getFirstName());
     user.setEmail(model.getEmail());
     return user;
   }
@@ -46,9 +46,9 @@ public class UserAdapter {
   public static UserListModel toListModel(User user) {
     UserListModel model = new UserListModel();
     model.setEmail(user.getEmail());
-    model.setNickname(user.getNickname());
+    model.setFirstName(user.getFirstName());
     model.setRole(user.getRole());
-    model.setHasPicture(user.getPicture() != null);
+    model.setPicture(user.getPicture());
     return model;
   }
 }

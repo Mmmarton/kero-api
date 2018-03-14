@@ -24,7 +24,7 @@ public class FileService {
 
   private static final Logger LOG = Logger.getLogger(FileService.class);
   private static final int PROFILE_SIZE = 400;
-  private static final int PREVIEW_SIZE = 200;
+  private static final int PREVIEW_SIZE = 250;
 
   @Value("${images.folder}")
   private String imagesFolder;

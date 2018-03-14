@@ -4,17 +4,17 @@ import com.komak.kero.keroapi.auth.Role;
 
 public class UserListModel {
 
-  private String nickname;
+  private String firstName;
   private String email;
   private Role role;
-  private boolean hasPicture;
+  private String picture;
 
-  public String getNickname() {
-    return nickname;
+  public String getFirstName() {
+    return firstName;
   }
 
-  public void setNickname(String nickname) {
-    this.nickname = nickname;
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
   }
 
   public String getEmail() {
@@ -33,11 +33,11 @@ public class UserListModel {
     this.role = role;
   }
 
-  public boolean getHasPicture() {
-    return hasPicture;
+  public String getPicture() {
+    return picture;
   }
 
-  public void setHasPicture(boolean hasPicture) {
-    this.hasPicture = hasPicture;
+  public void setPicture(String picture) {
+    this.picture = picture;
   }
 }

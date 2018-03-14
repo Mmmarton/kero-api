@@ -1,12 +1,11 @@
 package com.komak.kero.keroapi.user;
 
+import com.komak.kero.keroapi.FileService;
 import com.komak.kero.keroapi.auth.Credentials;
 import com.komak.kero.keroapi.auth.Role;
 import com.komak.kero.keroapi.error.InvalidInvitationException;
-import com.komak.kero.keroapi.error.UnauthorisedException;
-import com.komak.kero.keroapi.error.InvalidUserException;
 import com.komak.kero.keroapi.error.NoInvitationException;
-import com.komak.kero.keroapi.FileService;
+import com.komak.kero.keroapi.error.UnauthorisedException;
 import com.komak.kero.keroapi.user.model.UserRoleModel;
 import com.komak.kero.keroapi.user.model.UserUpdateModel;
 import java.util.List;
@@ -62,10 +61,18 @@ public class UserService {
     userRepository.save(merge(invitedUser, user));
   }
 
-  public void invite(User user) {
+  public void inviteByUserId(User user, String userId) {
+    String inviter = userRepository.findOne(userId).getFirstName();
+    if (inviter == null || inviter.isEmpty()) {
+      throw new InvalidInvitationException();
+    }
+    invite(user, inviter);
+  }
+
+  public void invite(User user, String inviter) {
     user.setUsername(RandomStringUtils.randomAlphanumeric(20));
     userRepository.save(user);
-    mailService.sendInvitation(user.getEmail(), user.getUsername());
+    mailService.sendInvitation(user, inviter);
   }
 
   public long getUserCount() {
@@ -89,7 +96,7 @@ public class UserService {
 
   public void delete(String email) {
     User user = userRepository.findByEmail(email);
-    if (user.getRole() != Role.ROLE_ADMIN) {
+    if (user.getRole() != null && user.getRole() != Role.ROLE_ADMIN) {
       userRepository.delete(user.getId());
     }
     else {
@@ -135,24 +142,21 @@ public class UserService {
     return oldUser;
   }
 
-  public void updatePicture(MultipartFile picture, String email) {
+  public String updatePicture(MultipartFile picture, String email) {
     User user = userRepository.findByEmail(email);
     if (user.getPicture() != null) {
       fileService.deletePicture(user.getPicture());
     }
     user.setPicture(fileService.savePicture(picture));
     userRepository.save(user);
+    return user.getPicture();
   }
 
-  public byte[] getPicture(String email) {
-    User user = userRepository.findByEmail(email);
-    byte[] picture = null;
-    if (user == null) {
-      throw new InvalidUserException();
+  public byte[] getPicture(String picture) {
+    byte[] pictureData = null;
+    if (picture != null) {
+      pictureData = fileService.getPicture(picture);
     }
-    if (user.getPicture() != null) {
-      picture = fileService.getPicture(user.getPicture());
-    }
-    return picture;
+    return pictureData;
   }
 }

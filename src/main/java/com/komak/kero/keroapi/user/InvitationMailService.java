@@ -29,20 +29,22 @@ public class InvitationMailService {
   @Value("${invitation.subject}")
   private String subject;
 
-  @Value("${invitation.link}")
-  private String link;
+  @Value("${home.link}")
+  private String home;
 
   @Autowired
   private JavaMailSender mailSender;
 
-  public void sendInvitation(String emailTo, String inviteCode) {
+  public void sendInvitation(User user, String inviter) {
     try {
       MimeMessage mimeMessage = mailSender.createMimeMessage();
       MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
       message.setFrom(new InternetAddress(sender, personal));
-      message.setTo(emailTo);
+      message.setTo(user.getEmail());
       message.setSubject(subject);
-      message.setText(generateInvitation(emailTo, inviteCode), true);
+      message.setText(
+          generateInvitation(user.getEmail(), user.getFirstName(), user.getUsername(), inviter),
+          true);
       mailSender.send(mimeMessage);
     }
     catch (MessagingException e) {
@@ -53,12 +55,13 @@ public class InvitationMailService {
     }
   }
 
-  private String generateInvitation(String emailTo, String inviteCode) throws IOException {
-    String invitationLink = link + emailTo + "/" + inviteCode;
+  private String generateInvitation(String emailTo, String target, String inviteCode,
+      String inviter) throws IOException {
+    String invitationLink = home + "register/" + emailTo + "/" + inviteCode;
     String message;
     InputStream resourceInputStream = null;
     try {
-      Resource resource = new ClassPathResource("invitation.html");
+      Resource resource = new ClassPathResource("emailTemplate.html");
       resourceInputStream = resource.getInputStream();
       Scanner scanner = new Scanner(resourceInputStream);
       StringBuilder builder = new StringBuilder();
@@ -82,6 +85,10 @@ public class InvitationMailService {
       }
     }
 
-    return message.replace("*", invitationLink);
+    return message.replace("REGISTER", invitationLink)
+        .replace("HOME", home)
+        .replace("EMAIL", emailTo)
+        .replace("INVITER", inviter)
+        .replace("TARGET", target);
   }
 }

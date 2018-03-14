@@ -50,7 +50,7 @@ class UserController {
   public ResponseEntity<Object> invite(@RequestBody @Valid UserInviteModel userInviteModel) {
     UserSession session = authService.getSession();
     if (session.getRole() == Role.ROLE_ADMIN) {
-      userService.invite(UserAdapter.toUser(userInviteModel));
+      userService.inviteByUserId(UserAdapter.toUser(userInviteModel), session.getId());
       return new ResponseEntity("Done.", HttpStatus.OK);
     }
     else {
@@ -85,7 +85,7 @@ class UserController {
 
   @RequestMapping(value = "/", method = RequestMethod.PUT)
   public ResponseEntity<Object> update(
-      @RequestBody @Valid UserUpdateModel userUpdateModel, BindingResult result) {
+      @RequestBody UserUpdateModel userUpdateModel, BindingResult result) {
 
     userUpdateModelValidator.validate(userUpdateModel, result);
     if (result.hasFieldErrors()) {
@@ -106,13 +106,13 @@ class UserController {
   public ResponseEntity<Object> updatePicture(
       @RequestParam("picture") MultipartFile picture) {
     UserSession session = authService.getSession();
-    userService.updatePicture(picture, session.getEmail());
-    return new ResponseEntity("Done.", HttpStatus.OK);
+    String newPicture = userService.updatePicture(picture, session.getEmail());
+    return new ResponseEntity(newPicture, HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/picture/{email:.+}", method = RequestMethod.GET)
-  byte[] getPicture(@PathVariable("email") String email) {
-    return userService.getPicture(email);
+  @RequestMapping(value = "/picture/{picture:.+}", method = RequestMethod.GET)
+  byte[] getPicture(@PathVariable("picture") String picture) {
+    return userService.getPicture(picture);
   }
 
   @RequestMapping(value = "/{email:.+}", method = RequestMethod.DELETE)
