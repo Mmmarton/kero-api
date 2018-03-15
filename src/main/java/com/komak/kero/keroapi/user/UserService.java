@@ -61,18 +61,19 @@ public class UserService {
     userRepository.save(merge(invitedUser, user));
   }
 
-  public void inviteByUserId(User user, String userId) {
+  public String inviteByUserId(User user, String userId) {
     String inviter = userRepository.findOne(userId).getFirstName();
     if (inviter == null || inviter.isEmpty()) {
       throw new InvalidInvitationException();
     }
-    invite(user, inviter);
+    return invite(user, inviter);
   }
 
-  public void invite(User user, String inviter) {
+  public String invite(User user, String inviter) {
     user.setUsername(RandomStringUtils.randomAlphanumeric(20));
-    userRepository.save(user);
+    User newUser = userRepository.save(user);
     mailService.sendInvitation(user, inviter);
+    return newUser.getId();
   }
 
   public long getUserCount() {
@@ -84,7 +85,7 @@ public class UserService {
   }
 
   public void changeRole(UserRoleModel userRole) {
-    User user = userRepository.findByEmail(userRole.getEmail());
+    User user = userRepository.findOne(userRole.getId());
     if (user.getRole() != Role.ROLE_ADMIN) {
       user.setRole(userRole.getRole());
       userRepository.save(user);
@@ -94,9 +95,9 @@ public class UserService {
     }
   }
 
-  public void delete(String email) {
-    User user = userRepository.findByEmail(email);
-    if (user.getRole() != null && user.getRole() != Role.ROLE_ADMIN) {
+  public void delete(String id) {
+    User user = userRepository.findOne(id);
+    if (user.getRole() == null || user.getRole() != Role.ROLE_ADMIN) {
       userRepository.delete(user.getId());
     }
     else {
@@ -105,7 +106,7 @@ public class UserService {
   }
 
   public void update(UserUpdateModel newUser) {
-    User user = userRepository.findByEmail(newUser.getEmail());
+    User user = userRepository.findOne(newUser.getId());
     if (newUser.getOldPassword() != null || newUser.getPassword() != null) {
       if (!passwordEncoder.matches(newUser.getOldPassword(), user.getPassword())) {
         throw new UnauthorisedException("Wrong password.");
@@ -142,8 +143,8 @@ public class UserService {
     return oldUser;
   }
 
-  public String updatePicture(MultipartFile picture, String email) {
-    User user = userRepository.findByEmail(email);
+  public String updatePicture(MultipartFile picture, String id) {
+    User user = userRepository.findOne(id);
     if (user.getPicture() != null) {
       fileService.deletePicture(user.getPicture());
     }

@@ -2,12 +2,21 @@ package com.komak.kero.keroapi.user.model;
 
 public class UserUpdateModel {
 
+  private String id;
   private String password;
   private String oldPassword;
   private String nickname;
   private String firstName;
   private String lastName;
   private String email;
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
 
   public String getPassword() {
     return password;

@@ -5,6 +5,7 @@ import java.util.Objects;
 
 public class UserViewModel {
 
+  private String id;
   private String token;
   private String nickname;
   private String firstName;
@@ -12,6 +13,14 @@ public class UserViewModel {
   private String email;
   private String picture;
   private Role role;
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
 
   public String getToken() {
     return token;

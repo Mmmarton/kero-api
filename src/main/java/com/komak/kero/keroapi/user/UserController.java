@@ -50,8 +50,8 @@ class UserController {
   public ResponseEntity<Object> invite(@RequestBody @Valid UserInviteModel userInviteModel) {
     UserSession session = authService.getSession();
     if (session.getRole() == Role.ROLE_ADMIN) {
-      userService.inviteByUserId(UserAdapter.toUser(userInviteModel), session.getId());
-      return new ResponseEntity("Done.", HttpStatus.OK);
+      String id = userService.inviteByUserId(UserAdapter.toUser(userInviteModel), session.getId());
+      return new ResponseEntity(id, HttpStatus.OK);
     }
     else {
       return new ResponseEntity("Not authorised.", HttpStatus.UNAUTHORIZED);
@@ -86,7 +86,6 @@ class UserController {
   @RequestMapping(value = "/", method = RequestMethod.PUT)
   public ResponseEntity<Object> update(
       @RequestBody UserUpdateModel userUpdateModel, BindingResult result) {
-
     userUpdateModelValidator.validate(userUpdateModel, result);
     if (result.hasFieldErrors()) {
       List<FieldErrorMessage> fieldErrors = result.getFieldErrors().stream()
@@ -95,7 +94,7 @@ class UserController {
     }
 
     UserSession session = authService.getSession();
-    if (!session.getEmail().equals(userUpdateModel.getEmail())) {
+    if (!session.getId().equals(userUpdateModel.getId())) {
       return new ResponseEntity("Not authorised.", HttpStatus.UNAUTHORIZED);
     }
     userService.update(userUpdateModel);
@@ -106,7 +105,7 @@ class UserController {
   public ResponseEntity<Object> updatePicture(
       @RequestParam("picture") MultipartFile picture) {
     UserSession session = authService.getSession();
-    String newPicture = userService.updatePicture(picture, session.getEmail());
+    String newPicture = userService.updatePicture(picture, session.getId());
     return new ResponseEntity(newPicture, HttpStatus.OK);
   }
 
@@ -115,11 +114,11 @@ class UserController {
     return userService.getPicture(picture);
   }
 
-  @RequestMapping(value = "/{email:.+}", method = RequestMethod.DELETE)
-  public ResponseEntity<Object> delete(@PathVariable("email") String email) {
+  @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+  public ResponseEntity<Object> delete(@PathVariable("id") String id) {
     UserSession session = authService.getSession();
     if (session.getRole() == Role.ROLE_ADMIN) {
-      userService.delete(email);
+      userService.delete(id);
       return new ResponseEntity("Done.", HttpStatus.OK);
     }
     else {

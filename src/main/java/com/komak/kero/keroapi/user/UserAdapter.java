@@ -10,6 +10,7 @@ public class UserAdapter {
 
   public static UserViewModel toViewModel(User user) {
     UserViewModel model = new UserViewModel();
+    model.setId(user.getId());
     model.setNickname(user.getNickname());
     model.setFirstName(user.getFirstName());
     model.setLastName(user.getLastName());
@@ -22,7 +23,6 @@ public class UserAdapter {
   public static UserSession toSession(User user) {
     UserSession session = new UserSession();
     session.setId(user.getId());
-    session.setEmail(user.getEmail());
     session.setRole(user.getRole());
     return session;
   }
@@ -45,6 +45,7 @@ public class UserAdapter {
 
   public static UserListModel toListModel(User user) {
     UserListModel model = new UserListModel();
+    model.setId(user.getId());
     model.setEmail(user.getEmail());
     model.setFirstName(user.getFirstName());
     model.setRole(user.getRole());

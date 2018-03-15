@@ -4,15 +4,15 @@ import com.komak.kero.keroapi.auth.Role;
 
 public class UserRoleModel {
 
-  private String email;
+  private String id;
   private Role role;
 
-  public String getEmail() {
-    return email;
+  public String getId() {
+    return id;
   }
 
-  public void setEmail(String email) {
-    this.email = email;
+  public void setId(String id) {
+    this.id = id;
   }
 
   public Role getRole() {

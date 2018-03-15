@@ -4,10 +4,19 @@ import com.komak.kero.keroapi.auth.Role;
 
 public class UserListModel {
 
+  private String id;
   private String firstName;
   private String email;
   private Role role;
   private String picture;
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
 
   public String getFirstName() {
     return firstName;
