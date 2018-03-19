@@ -4,6 +4,7 @@ import com.komak.kero.keroapi.FileService;
 import com.komak.kero.keroapi.auth.Credentials;
 import com.komak.kero.keroapi.auth.Role;
 import com.komak.kero.keroapi.error.InvalidInvitationException;
+import com.komak.kero.keroapi.error.InvalidUserException;
 import com.komak.kero.keroapi.error.NoInvitationException;
 import com.komak.kero.keroapi.error.UnauthorisedException;
 import com.komak.kero.keroapi.user.model.UserRoleModel;
@@ -159,5 +160,17 @@ public class UserService {
       pictureData = fileService.getPicture(picture);
     }
     return pictureData;
+  }
+
+  public User getById(String id) {
+    System.out.println(id);
+    if (id == null) {
+      throw new InvalidUserException();
+    }
+    User user = userRepository.findOne(id);
+    if (user == null) {
+      throw new InvalidUserException();
+    }
+    return user;
   }
 }

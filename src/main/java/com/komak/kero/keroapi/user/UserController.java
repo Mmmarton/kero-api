@@ -8,6 +8,7 @@ import com.komak.kero.keroapi.user.model.UserInviteModel;
 import com.komak.kero.keroapi.user.model.UserListModel;
 import com.komak.kero.keroapi.user.model.UserRoleModel;
 import com.komak.kero.keroapi.user.model.UserUpdateModel;
+import com.komak.kero.keroapi.user.model.UserViewModel;
 import com.komak.kero.keroapi.validation.FieldErrorMessage;
 import com.komak.kero.keroapi.validation.UserUpdateModelValidator;
 import java.util.List;
@@ -69,6 +70,12 @@ class UserController {
     else {
       return new ResponseEntity("Not authorised.", HttpStatus.UNAUTHORIZED);
     }
+  }
+
+  @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+  public ResponseEntity<Object> getById(@PathVariable("id") String id) {
+    UserViewModel user = UserAdapter.toViewModel(userService.getById(id));
+    return new ResponseEntity(user, HttpStatus.OK);
   }
 
   @RequestMapping(value = "/role", method = RequestMethod.PUT)
