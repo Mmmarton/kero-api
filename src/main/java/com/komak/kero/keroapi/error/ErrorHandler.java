@@ -28,7 +28,7 @@ public class ErrorHandler {
   @ResponseBody
   public ErrorMessage handleHttpMessageNotReadableException(
       HttpMessageNotReadableException exception) {
-    LOG.warn(INVALID_DATA, exception);
+    LOG.warn(INVALID_DATA + " : " + exception.getMessage());
     return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_DATA);
   }
 
@@ -37,7 +37,7 @@ public class ErrorHandler {
   @ResponseBody
   public ErrorMessage handleNoInvitationException(
       NoInvitationException exception) {
-    LOG.warn(NO_INVITATION, exception);
+    LOG.info(NO_INVITATION + " : " + exception.getEmail());
     return new ErrorMessage(HttpStatus.BAD_REQUEST, NO_INVITATION);
   }
 
@@ -46,7 +46,7 @@ public class ErrorHandler {
   @ResponseBody
   public ErrorMessage handleInvalidInvitationException(
       InvalidInvitationException exception) {
-    LOG.warn(INVALID_INVITATION, exception);
+    LOG.info(INVALID_INVITATION + " : " + exception.getMessage());
     return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_INVITATION);
   }
 
@@ -55,7 +55,7 @@ public class ErrorHandler {
   @ResponseBody
   public ErrorMessage handleUnauthorisedException(
       UnauthorisedException exception) {
-    LOG.warn(UNAUTHORISED, exception);
+    LOG.warn(UNAUTHORISED + " : " + exception.getMessage());
     return new ErrorMessage(HttpStatus.NOT_ACCEPTABLE, UNAUTHORISED);
   }
 
@@ -64,6 +64,7 @@ public class ErrorHandler {
   @ResponseBody
   public ErrorMessage handleFileException(
       FileException exception) {
+    LOG.error(FILE_EXCEPTION + " : " + exception.getMessage());
     return new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, FILE_EXCEPTION);
   }
 
@@ -72,7 +73,7 @@ public class ErrorHandler {
   @ResponseBody
   public ErrorMessage handleInvalidUserException(
       InvalidUserException exception) {
-    LOG.warn(INVALID_USER, exception);
+    LOG.info(INVALID_USER + " : " + exception.getId());
     return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_USER);
   }
 
@@ -81,7 +82,7 @@ public class ErrorHandler {
   @ResponseBody
   public ErrorMessage handleInvalidEventException(
       InvalidEventException exception) {
-    LOG.warn(INVALID_EVENT, exception);
+    LOG.info(INVALID_EVENT + " : " + exception.getId());
     return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_EVENT);
   }
 
@@ -90,7 +91,7 @@ public class ErrorHandler {
   @ResponseBody
   public ErrorMessage handleMultipartException(
       MultipartException exception) {
-    LOG.warn(INVALID_FILE, exception);
+    LOG.info(INVALID_FILE + " : " + exception.getMessage());
     return new ErrorMessage(HttpStatus.BAD_REQUEST, INVALID_FILE);
   }
 }

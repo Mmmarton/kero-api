@@ -118,6 +118,9 @@ public class FileService {
 
   public void deleteDirectory(String path) {
     Path eventPath = Paths.get(imagesFolder + path);
+    if (!Files.exists(eventPath)) {
+      return;
+    }
     try {
       if (Files.exists(eventPath)) {
         FileUtils.deleteDirectory(eventPath.toFile());
@@ -130,8 +133,8 @@ public class FileService {
 
   private void createFile(String folder, String filePath, InputStream stream) {
     try {
-      Path file = Paths.get(folder + filePath);
-      Files.write(file, toJPG(stream, false));
+      Path path = Paths.get(folder + filePath);
+      Files.write(path, toJPG(stream, false));
     }
     catch (Exception e) {
       LOG.error("File operation error", e);
@@ -141,8 +144,8 @@ public class FileService {
 
   private void createScaledFile(String folder, String filePath, InputStream stream) {
     try {
-      Path file = Paths.get(folder + filePath);
-      Files.write(file, toJPG(stream, true));
+      Path path = Paths.get(folder + filePath);
+      Files.write(path, toJPG(stream, true));
     }
     catch (Exception e) {
       LOG.error("File operation error", e);
@@ -152,7 +155,11 @@ public class FileService {
 
   private void deleteFile(String folder, String filePath) {
     try {
-      Files.delete(Paths.get(folder + filePath));
+      Path path = Paths.get(folder + filePath);
+      if (!Files.exists(path)) {
+        return;
+      }
+      Files.delete(path);
     }
     catch (IOException e) {
       LOG.error("File operation error", e);
@@ -161,12 +168,16 @@ public class FileService {
   }
 
   private byte[] getFile(String folder, String filePath, boolean scaledown) {
-    byte[] bytes;
+    byte[] bytes = {};
     InputStream inputStream = null;
     ByteArrayOutputStream outputStream = null;
+    Path path = Paths.get(folder + filePath);
+    if (!Files.exists(path)) {
+      return bytes;
+    }
     try {
       if (scaledown) {
-        inputStream = Files.newInputStream(Paths.get(folder + filePath));
+        inputStream = Files.newInputStream(path);
         BufferedImage bufferedImage = ImageIO.read(inputStream);
         bufferedImage = scale(bufferedImage, PREVIEW_SIZE);
         outputStream = new ByteArrayOutputStream();
@@ -174,7 +185,7 @@ public class FileService {
         bytes = outputStream.toByteArray();
       }
       else {
-        bytes = Files.readAllBytes(Paths.get(folder + filePath));
+        bytes = Files.readAllBytes(path);
       }
     }
     catch (IOException e) {

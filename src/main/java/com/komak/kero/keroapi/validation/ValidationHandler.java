@@ -22,7 +22,7 @@ public class ValidationHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ResponseBody
   public List<FieldErrorMessage> handleValidationError(MethodArgumentNotValidException ex) {
-    LOG.warn("Validation error", ex);
+    LOG.info("Validation error", ex);
     BindingResult result = ex.getBindingResult();
     List<FieldErrorMessage> errors = new ArrayList<>();
     for (FieldError error : result.getFieldErrors()) {
@@ -35,7 +35,7 @@ public class ValidationHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ResponseBody
   public FieldErrorMessage handleDuplicateKeyException(DuplicateKeyException ex) {
-    LOG.warn(FieldErrorMessage.DUPLICATE, ex);
+    LOG.info(FieldErrorMessage.DUPLICATE, ex);
     String field = ex.getMessage().substring(ex.getMessage().indexOf("x:") + 3).split(" ")[0];
     return new FieldErrorMessage(field, FieldErrorMessage.DUPLICATE);
   }

@@ -93,7 +93,6 @@ public class UserViewModel {
 
   @Override
   public int hashCode() {
-
     return Objects.hash(token, email);
   }
 }

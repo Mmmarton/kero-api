@@ -30,7 +30,7 @@ public class EventService {
   public void delete(EventDeleteModel eventDelete) {
     Event event = eventRepository.findOne(eventDelete.getEventId());
     if (event == null) {
-      throw new InvalidEventException();
+      throw new InvalidEventException(eventDelete.getEventId());
     }
     String authorId = event.getAuthorId();
     if (authorId.equals(eventDelete.getIssuerId()) || eventDelete.isAdmin()) {
@@ -45,7 +45,7 @@ public class EventService {
   public void update(Event event) {
     Event oldEvent = eventRepository.findOne(event.getId());
     if (oldEvent == null) {
-      throw new InvalidEventException();
+      throw new InvalidEventException(event.getId());
     }
     eventRepository.save(update(oldEvent, event));
   }
@@ -53,11 +53,11 @@ public class EventService {
   public Event getEvent(String id) {
     Event event;
     if (id == null) {
-      throw new InvalidEventException();
+      throw new InvalidEventException(null);
     }
     event = eventRepository.findOne(id);
     if (event == null) {
-      throw new InvalidEventException();
+      throw new InvalidEventException(id);
     }
     return event;
   }

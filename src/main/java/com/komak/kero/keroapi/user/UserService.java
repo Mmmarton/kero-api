@@ -53,11 +53,11 @@ public class UserService {
     user.setPassword(passwordEncoder.encode(user.getPassword()));
     User invitedUser = userRepository.findByEmail(user.getEmail());
     if (invitedUser == null) {
-      throw new NoInvitationException();
+      throw new NoInvitationException(user.getEmail());
     }
 
     if (!invitedUser.getUsername().equals(inviteCode)) {
-      throw new InvalidInvitationException();
+      throw new InvalidInvitationException(invitedUser.getEmail() + " - " + inviteCode);
     }
     userRepository.save(merge(invitedUser, user));
   }
@@ -65,7 +65,7 @@ public class UserService {
   public String inviteByUserId(User user, String userId) {
     String inviter = userRepository.findOne(userId).getFirstName();
     if (inviter == null || inviter.isEmpty()) {
-      throw new InvalidInvitationException();
+      throw new InvalidInvitationException(userId + " can not invite because it has no name.");
     }
     return invite(user, inviter);
   }
@@ -163,13 +163,12 @@ public class UserService {
   }
 
   public User getById(String id) {
-    System.out.println(id);
     if (id == null) {
-      throw new InvalidUserException();
+      throw new InvalidUserException(null);
     }
     User user = userRepository.findOne(id);
     if (user == null) {
-      throw new InvalidUserException();
+      throw new InvalidUserException(id);
     }
     return user;
   }

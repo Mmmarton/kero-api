@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ViewController {
 
   @RequestMapping({"/event", "/user", "/user/list", "/galery", "/event/{id:\\w+}",
-      "/upload/{id:\\w+}", "/register/{id:\\w+}/{id:\\w+}", "/home"})
+      "/upload/{id:\\w+}", "/register/{email:\\w+.+}/{token:\\w+}", "/home"})
   public String index() {
     return "forward:/index.html";
   }

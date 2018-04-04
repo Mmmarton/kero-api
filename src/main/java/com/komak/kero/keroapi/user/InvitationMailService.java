@@ -48,10 +48,10 @@ public class InvitationMailService {
       mailSender.send(mimeMessage);
     }
     catch (MessagingException e) {
-      LOG.error("Failed to send email.", e);
+      LOG.warn("Failed to send email.", e);
     }
     catch (IOException e) {
-      LOG.error("Failed read email resources.", e);
+      LOG.warn("Failed read email resources.", e);
     }
   }
 

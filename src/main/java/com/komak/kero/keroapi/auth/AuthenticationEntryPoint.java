@@ -24,7 +24,7 @@ class AuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
     PrintWriter writer = response.getWriter();
     writer.print("Authentication failed.");
     response.setStatus(403);
-    LOG.warn("failed auth: '" + request.getRequestURI() + "', reason: " + authEx.getMessage());
+    LOG.error("failed auth: '" + request.getRequestURI() + "', reason: " + authEx.getMessage());
   }
 
   @Override
