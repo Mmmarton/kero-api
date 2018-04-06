@@ -41,7 +41,7 @@ public class FileService {
       createScaledFile(profilePicturesFolder, filename, inputStream);
     }
     catch (IOException e) {
-      LOG.error("File operation error", e);
+      LOG.error("File operation error." + e.getMessage());
       throw new FileException("Invalid picture.");
     }
     finally {
@@ -51,7 +51,7 @@ public class FileService {
         }
       }
       catch (Exception e) {
-        LOG.error("File operation error", e);
+        LOG.error("File operation error." + e.getMessage());
       }
     }
     return filename;
@@ -75,7 +75,7 @@ public class FileService {
       createFile(imagesFolder, filename, inputStream);
     }
     catch (IOException e) {
-      LOG.error("File operation error", e);
+      LOG.error("File operation error." + e.getMessage());
       throw new FileException("Invalid image.");
     }
     finally {
@@ -85,7 +85,7 @@ public class FileService {
         }
       }
       catch (Exception e) {
-        LOG.error("File operation error", e);
+        LOG.error("File operation error." + e.getMessage());
       }
     }
     return filename;
@@ -111,7 +111,7 @@ public class FileService {
       }
     }
     catch (Exception e) {
-      LOG.error("File operation error", e);
+      LOG.error("File operation error." + e.getMessage());
       throw new FileException("Failed to create event directory.");
     }
   }
@@ -137,7 +137,7 @@ public class FileService {
       Files.write(path, toJPG(stream, false));
     }
     catch (Exception e) {
-      LOG.error("File operation error", e);
+      LOG.error("File operation error." + e.getMessage());
       throw new FileException("Failed to save image.");
     }
   }
@@ -148,7 +148,7 @@ public class FileService {
       Files.write(path, toJPG(stream, true));
     }
     catch (Exception e) {
-      LOG.error("File operation error", e);
+      LOG.error("File operation error." + e.getMessage());
       throw new FileException("Failed to save image.");
     }
   }
@@ -162,7 +162,7 @@ public class FileService {
       Files.delete(path);
     }
     catch (IOException e) {
-      LOG.error("File operation error", e);
+      LOG.error("File operation error." + e.getMessage());
       throw new FileException("Failed to delete image.");
     }
   }
@@ -189,7 +189,7 @@ public class FileService {
       }
     }
     catch (IOException e) {
-      LOG.error("File operation error", e);
+      LOG.error("File operation error." + e.getMessage());
       throw new FileException("Failed to read image.");
 
     }
@@ -200,7 +200,7 @@ public class FileService {
         }
       }
       catch (Exception e) {
-        LOG.error("File operation error", e);
+        LOG.error("File operation error." + e.getMessage());
       }
       try {
         if (inputStream != null) {
@@ -208,7 +208,7 @@ public class FileService {
         }
       }
       catch (Exception e) {
-        LOG.error("File operation error", e);
+        LOG.error("File operation error." + e.getMessage());
       }
     }
     return bytes;
@@ -228,7 +228,7 @@ public class FileService {
       bytes = outputStream.toByteArray();
     }
     catch (IOException e) {
-      LOG.error("File operation error", e);
+      LOG.error("File operation error." + e.getMessage());
       throw new FileException("Failed to convert profile picture.");
     }
     finally {
@@ -236,7 +236,7 @@ public class FileService {
         outputStream.close();
       }
       catch (Exception e) {
-        LOG.error("File operation error", e);
+        LOG.error("File operation error." + e.getMessage());
       }
     }
     return bytes;
